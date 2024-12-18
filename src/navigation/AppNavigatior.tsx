@@ -25,19 +25,11 @@ const AppNavigator: React.FC = () => {
 
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen
-        name="Main"
-        component={TabNavigator}
-        options={{ headerShown: false }}
-      /> */}
-      {/* Using CustomBottomTabNavigator instead of TabNavigator */}
       <Stack.Screen
         name="Main"
         component={CustomBottomTabNavigator}
         options={{ headerShown: false }}
       />
-      {/* {token ? (
-          <> */}
       <Stack.Screen
         options={{ headerShown: false }}
         name="Wishlist"
@@ -49,12 +41,10 @@ const AppNavigator: React.FC = () => {
         component={Cart}
       />
       <Stack.Screen
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
         name="SearchProducts"
         component={SearchProducts}
       />
-      {/* </> */}
-      {/* ) : null} */}
     </Stack.Navigator>
   );
 };

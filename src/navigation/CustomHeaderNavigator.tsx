@@ -12,37 +12,43 @@ import { BottomTabParamList } from "../navigation/types";
 const CustomHeader: React.FC<{ showSearchInput?: boolean }> = ({
   showSearchInput = true,
 }) => {
-  const [searchText, setSearchText] = useState("");
   // Properly define the navigation hook with BottomTabParamList type
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
-
   return (
     <View style={styles.header}>
-      {/* Search Input or Shop by Category */}
       {showSearchInput ? (
         <TouchableOpacity
           style={{
             flex: 1,
             height: 40,
             backgroundColor: "#f0f0f0",
-            marginHorizontal: 10,
             borderRadius: 5,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingLeft: 20,
           }}
           onPress={() => {
+            console.log("Search input pressed");
             navigation.navigate("SearchProducts");
           }}
         >
-          <TextInput
-            placeholder="Search products"
-            value={searchText}
-            onChangeText={(text) => setSearchText(text)}
-            style={styles.searchInput}
-          />
+          <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+            <Text>Logo</Text>
+            <Text style={{opacity:0.5}}> Search product here</Text>
+          </View>
         </TouchableOpacity>
       ) : (
         <Text style={styles.shopText}>Shop by Category</Text>
       )}
-      <View style={{display:"flex",flexDirection:"row",alignItems:'center',gap:5}}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 5,
+        }}
+      >
         {/* Heart icon to navigate to Wishlist */}
         <TouchableOpacity
           onPress={() => {
@@ -70,8 +76,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     backgroundColor: "white",
+    gap:10
   },
   searchInput: {
     flex: 1,
