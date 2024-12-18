@@ -4,5 +4,9 @@ export type BottomTabParamList = {
   Account: any;
   Wishlist: any;
   Cart: any;
-  SearchProducts:any;
+  SearchProducts: any;
+  Login: any;
+  SignUp: any;
+  VerifyOtp: any;
+  Main:any;
 };

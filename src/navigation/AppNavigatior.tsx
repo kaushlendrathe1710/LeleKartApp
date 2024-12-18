@@ -4,10 +4,10 @@ import Wishlist from "../screens/Wishlist";
 import Cart from "../screens/Cart";
 import CustomBottomTabNavigator from "./CustomBottomTabNavigation";
 import SearchProducts from "../screens/SearchProducts";
-// import WishlistScreen from "../screens/WishlistScreen";
-// import CartScreen from "../screens/CartScreen";
-
-// import useAuthStore from "../store/authStore";
+import SignUp from "../screens/authScreens/SignUp";
+import VerifyOtp from "../screens/authScreens/VerifyOtp";
+import Login from "../screens/authScreens/Login";
+import Home from "../screens/Home";
 
 // Define the type for the stack's parameters
 export type RootStackParamList = {
@@ -15,6 +15,10 @@ export type RootStackParamList = {
   Wishlist: any; // No params for Wishlist
   Cart: any; // No params for Cart
   SearchProducts: any;
+  Login: any;
+  SignUp: any;
+  VerifyOtp: any;
+  Home:any;
 };
 
 // Create the stack with the defined parameters
@@ -37,6 +41,11 @@ const AppNavigator: React.FC = () => {
       />
       <Stack.Screen
         options={{ headerShown: false }}
+        name="Home"
+        component={Home}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
         name="Cart"
         component={Cart}
       />
@@ -44,6 +53,21 @@ const AppNavigator: React.FC = () => {
         options={{ headerShown: false }}
         name="SearchProducts"
         component={SearchProducts}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Login"
+        component={Login}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="SignUp"
+        component={SignUp}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="VerifyOtp"
+        component={VerifyOtp}
       />
     </Stack.Navigator>
   );

@@ -1,3 +1,4 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -7,11 +8,13 @@ import {
   Animated,
   TouchableOpacity,
 } from "react-native";
+import { BottomTabParamList } from "../navigation/types";
 
 const Account: React.FC = () => {
   const [isBoy, setIsBoy] = useState(true);
   const fadeAnim = useRef(new Animated.Value(1)).current;
-
+  // Properly define the navigation hook with BottomTabParamList type
+  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
   // Function to handle fade transition
   const toggleImage = () => {
     // Fade out
@@ -60,7 +63,10 @@ const Account: React.FC = () => {
               }
             />
           </View>
-          <TouchableOpacity style={[styles.accountBtn]}>
+          <TouchableOpacity
+            style={[styles.accountBtn]}
+            onPress={() => navigation.navigate("Login")}
+          >
             <Text
               style={{
                 color: "white",
