@@ -45,13 +45,19 @@ const CustomBottomTabNavigator = () => {
             <Icon
               name={
                 screen === "Home"
-                  ? "home"
+                  ? currentScreen === screen
+                    ? "home"
+                    : "home-outline"
                   : screen === "Categories"
-                  ? "list"
-                  : "person"
+                  ? currentScreen === screen
+                    ? "list"
+                    : "list-outline"
+                  : currentScreen === screen
+                  ? "person"
+                  : "person-outline"
               }
               color={currentScreen === screen ? "#000" : "#808080"}
-              size={currentScreen === screen ? 30 : 24}
+              size={currentScreen === screen ? 20 : 20}
             />
             <Text style={{ color: currentScreen === screen ? "#000" : "grey" }}>
               {screen}
@@ -69,7 +75,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     height: 60,
-    backgroundColor: "#f0f4f7",
+    backgroundColor: "white",
+    borderTopColor: "#DCDCDC",
+    borderWidth: 0.2,
   },
   tabItem: {
     alignItems: "center",
