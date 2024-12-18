@@ -1,4 +1,8 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -11,6 +15,7 @@ import {
 import { BottomTabParamList } from "../navigation/types";
 
 const Account: React.FC = () => {
+  const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   // Properly define the navigation hook with BottomTabParamList type
@@ -44,41 +49,40 @@ const Account: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Account  */}
-      <View style={{}}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: 20,
-          }}
-        >
-          <View style={styles.defaultImgContainer}>
-            <Animated.Image
-              style={[styles.profileImg, { opacity: fadeAnim }]}
-              source={
-                isBoy
-                  ? require("../../assets/myImages/boy.png")
-                  : require("../../assets/myImages/girl.png")
-              }
-            />
-          </View>
-          <TouchableOpacity
-            style={[styles.accountBtn]}
-            onPress={() => navigation.navigate("Login")}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 20,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              Login/Signup
-            </Text>
-          </TouchableOpacity>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "#f8f8f8",
+          paddingVertical: 30,
+        }}
+      >
+        <View style={styles.defaultImgContainer}>
+          <Animated.Image
+            style={[styles.profileImg, { opacity: fadeAnim }]}
+            source={
+              isBoy
+                ? require("../../assets/myImages/boy.png")
+                : require("../../assets/myImages/girl.png")
+            }
+          />
         </View>
+        <TouchableOpacity
+          style={[styles.accountBtn]}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            Login/Signup
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -87,7 +91,7 @@ const Account: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    backgroundColor: "white",
   },
   defaultImgContainer: {
     width: 100,
