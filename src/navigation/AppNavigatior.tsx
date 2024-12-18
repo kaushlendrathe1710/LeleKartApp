@@ -41,7 +41,7 @@ const AppNavigator: React.FC = () => {
         component={Cart}
       />
       <Stack.Screen
-        // options={{ headerShown: false }}
+        options={{ headerShown: false }}
         name="SearchProducts"
         component={SearchProducts}
       />

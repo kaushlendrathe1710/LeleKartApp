@@ -26,16 +26,25 @@ const CustomHeader: React.FC<{ showSearchInput?: boolean }> = ({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            paddingLeft: 20,
+            paddingHorizontal: 20,
           }}
           onPress={() => {
             console.log("Search input pressed");
             navigation.navigate("SearchProducts");
           }}
         >
-          <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <Text>Logo</Text>
-            <Text style={{opacity:0.5}}> Search product here</Text>
+            <Text style={{ opacity: 0.5 }}> Search product here</Text>
+            <Icon name="search-outline" size={30} color="black" />
           </View>
         </TouchableOpacity>
       ) : (
@@ -78,7 +87,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingHorizontal: 20,
     backgroundColor: "white",
-    gap:10
+    gap: 10,
   },
   searchInput: {
     flex: 1,
