@@ -9,8 +9,9 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { BottomTabParamList } from "../navigation/types";
-const CustomHeader: React.FC<{ showSearchInput?: boolean }> = ({
+const CustomHeader: React.FC<{ showSearchInput?: boolean; page?: string }> = ({
   showSearchInput = true,
+  page,
 }) => {
   // Properly define the navigation hook with BottomTabParamList type
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
@@ -47,34 +48,40 @@ const CustomHeader: React.FC<{ showSearchInput?: boolean }> = ({
             <Icon name="search-outline" size={30} color="black" />
           </View>
         </TouchableOpacity>
-      ) : (
+      ) : page !== "Account" ? (
         <Text style={styles.shopText}>Shop by Category</Text>
+      ) : (
+        <Text style={[styles.shopText, { textAlign: "center" }]}>
+          My Account
+        </Text>
       )}
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 5,
-        }}
-      >
-        {/* Heart icon to navigate to Wishlist */}
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Wishlist");
+      {page !== "Account" && (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
           }}
         >
-          <Icon name="heart-outline" size={35} color="black" />
-        </TouchableOpacity>
-        {/* Cart icon to navigate to Cart */}
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Cart");
-          }}
-        >
-          <Icon name="cart-outline" size={35} color="black" />
-        </TouchableOpacity>
-      </View>
+          {/* Heart icon to navigate to Wishlist */}
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Wishlist");
+            }}
+          >
+            <Icon name="heart-outline" size={35} color="black" />
+          </TouchableOpacity>
+          {/* Cart icon to navigate to Cart */}
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Cart");
+            }}
+          >
+            <Icon name="cart-outline" size={35} color="black" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -85,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
-    paddingHorizontal: 20,
+    paddingHorizontal: 25,
     backgroundColor: "white",
     gap: 10,
   },

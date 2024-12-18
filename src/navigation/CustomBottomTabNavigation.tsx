@@ -3,8 +3,8 @@ import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Home from "../screens/Home";
 import AllCategories from "../screens/AllCategories";
-import Profile from "../screens/Profile";
 import CustomHeader from "./CustomHeaderNavigator";
+import Account from "../screens/Account";
 
 const CustomBottomTabNavigator = () => {
   const [currentScreen, setCurrentScreen] = useState("Home");
@@ -16,7 +16,7 @@ const CustomBottomTabNavigator = () => {
       case "Categories":
         return <AllCategories />;
       case "Account":
-        return <Profile />;
+        return <Account />;
       default:
         return <Home />;
     }
@@ -25,11 +25,10 @@ const CustomBottomTabNavigator = () => {
   return (
     <View style={{ flex: 1 }}>
       {/* Render Header */}
-      {currentScreen === "Home" || currentScreen === "Categories" ? (
+      {(currentScreen === "Home" || currentScreen === "Categories") && (
         <CustomHeader showSearchInput={currentScreen === "Home"} />
-      ) : (
-        <View style={{ height: 50 }} />
       )}
+      {currentScreen === "Account" && <CustomHeader page={currentScreen} showSearchInput={false} />}
 
       {/* Main screen content */}
       <View style={{ flex: 1 }}>{renderScreen()}</View>
