@@ -1,24 +1,57 @@
 // src/services/authService.tsx
 import axios from "axios";
 import { BASE_URL } from "../config"; // Replace with your API URL
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { BottomTabParamList } from "src/navigation/types";
 
 // Register API
-export const registerUser = async (userData: {
-  email: string;
-  password: string;
-  role: string;
-  name: string;
-  phone: string;
-}) => {
+export const registerUser = async (
+  email: string,
+  password: string,
+  name: string,
+  phone: string,
+  showToast: any,
+  setLoading: any,
+  navigation: any
+) => {
+  // const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+  console.log(email);
+  setLoading(true);
   try {
-    const response = await axios.post(`${BASE_URL}/auth/register`, userData);
+    const response = await axios.post(
+      `${BASE_URL}/api/auth/register`,
+      {
+        name,
+        email,
+        password,
+        phone,
+      },
+      { timeout: 10000 }
+    );
+    console.log(response.data);
+    navigation.navigate("VerifyOtp", {
+      email: email,
+    });
+    showToast(`${response.data.message}`, "success", "3000");
     return { success: true, user: response.data };
   } catch (error: any) {
-    console.error("Register Error:", error.response?.data || error.message);
+    if (error.code === "ECONNABORTED") {
+      // Handle timeout error
+      showToast(
+        "The request timed out. Please try again later.",
+        "error",
+        "2000"
+      );
+    } else {
+      showToast(`${error.response?.data || error.message}`, "error", "2000");
+    }
+    console.error("Signup Error:", error.response?.data || error.message);
     return {
       success: false,
-      error: error.response?.data?.message || "Registration failed",
+      error: error.response?.data?.message || "Login failed",
     };
+  } finally {
+    setLoading(false);
   }
 };
 

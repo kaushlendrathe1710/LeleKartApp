@@ -11,14 +11,14 @@ import Home from "../screens/Home";
 
 // Define the type for the stack's parameters
 export type RootStackParamList = {
-  Main: any; // No params for Main
-  Wishlist: any; // No params for Wishlist
-  Cart: any; // No params for Cart
+  Main: any;
+  Wishlist: any; 
+  Cart: any; 
   SearchProducts: any;
   Login: any;
   SignUp: any;
-  VerifyOtp: any;
-  Home:any;
+  VerifyOtp: { email: string; phone: string };
+  Home: any;
 };
 
 // Create the stack with the defined parameters

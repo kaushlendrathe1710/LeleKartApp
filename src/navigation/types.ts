@@ -1,12 +1,12 @@
 export type BottomTabParamList = {
-  Home: any;
   Categories: any;
   Account: any;
-  Wishlist: any;
-  Cart: any;
+  Main: any; // No params for Main
+  Wishlist: any; // No params for Wishlist
+  Cart: any; // No params for Cart
   SearchProducts: any;
   Login: any;
   SignUp: any;
-  VerifyOtp: any;
-  Main:any;
+  VerifyOtp: { email: string; phone: string };
+  Home: any;
 };

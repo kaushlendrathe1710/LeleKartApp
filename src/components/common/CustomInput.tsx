@@ -7,6 +7,7 @@ interface CustomInputProps {
   setText?: (text: string) => void;
   iconName?: string;
   value: any;
+  secure?: boolean; // Make secure optional, default to false
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -14,6 +15,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   placeholder,
   iconName,
   value,
+  secure = false, // Default to false if not provided
 }) => {
   return (
     <View style={styles.InputContainer}>
@@ -23,6 +25,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
         placeholder={placeholder}
         onChangeText={(text) => setText && setText(text)}
         style={styles.input}
+        secureTextEntry={secure} // Correctly pass secureTextEntry prop
+        keyboardType={secure ? "default" : "email-address"}
       />
     </View>
   );
@@ -30,6 +34,14 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
 const styles = StyleSheet.create({
   InputContainer: {
+    // flexDirection: "row",
+    // alignItems: "center",
+    // paddingHorizontal: 15,
+    // height: 60,
+    // backgroundColor: "#f0f0f0",
+    // borderRadius: 10,
+    // marginHorizontal: 20,
+    // marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
@@ -38,8 +50,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 20,
     marginVertical: 5,
-    // borderWidth: 0.5,
-    // borderColor: "#ccc",
   },
   input: {
     flex: 1,
