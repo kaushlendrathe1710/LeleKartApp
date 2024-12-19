@@ -104,20 +104,29 @@ export const loginUser = async (
 // Verify user OTP API
 export const verifyUserOtp = async (
   email: string,
-  verificationCode: string
+  otpValue: string,
+  setLoading: any,
+  showToast: any,
+  navigation: any
 ) => {
+  console.log("Starting OTP verification");
+  setLoading(true);
   try {
-    const response = await axios.post(`${BASE_URL}/auth/verify-otp`, {
+    const response = await axios.post(`${BASE_URL}/api/auth/verifyuser`, {
       email,
-      verificationCode,
+      verificationCode: otpValue, // Ensure you're passing otpValue correctly
     });
+    showToast(`${response.data.message || "OTP Verified"}`, "success", 2000);
+    navigation.navigate("Login");
     return { success: true, message: response.data.message };
   } catch (error: any) {
-    console.error("Verify OTP Error:", error.response?.data || error.message);
-    return {
-      success: false,
-      error: error.response?.data?.message || "OTP Verification failed",
-    };
+    const errorMessage =
+      error.response?.data?.message || error.message || "Something went wrong";
+    showToast(errorMessage, "error", 2000);
+    console.error("Verify OTP Error:", errorMessage);
+    return { success: false, error: errorMessage };
+  } finally {
+    setLoading(false);
   }
 };
 

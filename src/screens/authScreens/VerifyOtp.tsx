@@ -14,11 +14,14 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CButton from "src/components/common/CButton";
+import { useToast } from "src/context/ToastContext";
 import { BottomTabParamList } from "src/navigation/types";
+import { verifyUserOtp } from "src/services/api/authApi";
 
 type VerifyOtpRouteProp = RouteProp<BottomTabParamList, "VerifyOtp">;
 const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+  const { showToast } = useToast();
   const { colors } = useTheme();
   const { email } = route.params;
   const inputRefs = useRef<Array<TextInput | null>>([]);
@@ -31,11 +34,9 @@ const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
-    // Move to next input if a digit is entered
     if (text.length === 1 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
-    // Automatically move to previous input if cleared
     if (text.length === 0 && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -43,27 +44,14 @@ const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
 
   const confirmOtp = async () => {
     if (otp.join("").length < 4) {
-      showMessage({
-        message: "Enter OTP",
-        type: "danger",
-      });
+      showToast("Please enter a 4-digit OTP", "info", 2000); // Clear message
       return;
     }
     try {
-      setLoading(true);
-      const data = await otpConfirm(email, otp.join(""));
-      showMessage({
-        message: data.message,
-        type: "success",
-      });
-      setLoading(false);
-      setShowOption("Reset");
+      const otpValue = otp.join("");
+      await verifyUserOtp(email, otpValue, setLoading, showToast, navigation); // Ensure order matches function definition
     } catch (err: any) {
-      showMessage({
-        message: `${err}`,
-        type: "danger",
-      });
-      console.log(err);
+      console.log("Error in confirmOtp:", err);
     }
   };
 
@@ -95,7 +83,7 @@ const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
         ))}
       </View>
       <View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={confirmOtp}>
           <CButton buttonText="Confirm" />
         </TouchableOpacity>
       </View>

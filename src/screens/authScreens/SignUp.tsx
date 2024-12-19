@@ -144,13 +144,13 @@ const SignUp: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>
-              Already have an account?{" "}
-              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                <Text style={styles.loginLink}>Login</Text>
-              </TouchableOpacity>
-            </Text>
+          <View style={styles.bottomTextContainer}>
+            <Text style={[styles.noAccountText]}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={[styles.signUpText, { color: "#1597FF" }]}>
+                Login Now
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -208,19 +208,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
   },
-  loginContainer: {
+  bottomTextContainer: {
+    flexDirection: "row",
+    gap: 3,
     alignItems: "center",
-    marginTop: 20,
+    justifyContent: "center",
   },
-  loginText: {
+  noAccountText: {
     textAlign: "center",
+    marginTop: 4,
     fontSize: 16,
-    color: "#444",
   },
-  loginLink: {
-    color: "#1597FF",
+  signUpText: {
+    textAlign: "center",
     fontWeight: "bold",
-    lineHeight: 24,
+    marginTop: 5,
   },
 });
 

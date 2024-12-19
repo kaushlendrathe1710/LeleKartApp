@@ -17,7 +17,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   // Properly define the navigation hook with BottomTabParamList type
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
-  
+
   const handleLogin = async () => {
     if (!email) {
       showToast("Please fill email", "info", 2000);
@@ -93,14 +93,15 @@ const Login: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>
-              Don't have an Account?{" "}
-              <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                <Text style={styles.registerLink}>Register now</Text>
-              </TouchableOpacity>
-            </Text>
+          <View style={styles.bottomTextContainer}>
+            <Text style={[styles.noAccountText]}>Don't have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+              <Text style={[styles.signUpText, { color: "#1597FF" }]}>
+                Register Now
+              </Text>
+            </TouchableOpacity>
           </View>
+          
         </View>
       )}
     </View>
@@ -209,19 +210,21 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
-  registerContainer: {
+  bottomTextContainer: {
+    flexDirection: "row",
+    gap: 3,
     alignItems: "center",
-    marginTop: 20,
+    justifyContent: "center",
   },
-  registerText: {
+  noAccountText: {
     textAlign: "center",
+    marginTop: 4,
     fontSize: 16,
-    color: "#444",
   },
-  registerLink: {
-    color: "#1597FF",
+  signUpText: {
+    textAlign: "center",
     fontWeight: "bold",
-    lineHeight: 24,
+    marginTop: 5,
   },
 });
 
