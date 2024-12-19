@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   bottomTextContainer: {
+    marginTop:10,
     flexDirection: "row",
     gap: 3,
     alignItems: "center",

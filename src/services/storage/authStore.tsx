@@ -1,77 +1,58 @@
-// src/stores/authStore.tsx
-import create from "zustand";
+import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { storage } from "../mmkv"; // MMKV instance
-import { registerUser, loginUser, verifyUserOtp } from "../api/authApi"; // Import services
+import { storage } from "./storage";
 
-interface AuthState {
-  user: any;
+// Define the store's interface
+interface AuthStore {
   token: string | null;
-  isAuthenticated: boolean;
-
-  register: (userData: {
-    email: string;
-    password: string;
-    role: string;
-    name: string;
-    phone: string;
-  }) => Promise<void>;
-  login: (credentials: { email: string; password: string }) => Promise<void>;
-  verifyOtp: (email: string, verificationCode: string) => Promise<void>;
-  forgotPassword: (email: string) => Promise<void>;
-  resetPassword: (
-    email: string,
-    verificationCode: string,
-    newPassword: string
-  ) => Promise<void>;
-  logout: () => void;
+  mmkvEmail: string | null;
+  setToken: (token: string) => void;
+  setmmkvEmail: (mmkvEmail: string) => void;
+  removemmkvEmail: () => void;
+  removeToken: () => void;
 }
 
-export const useAuthStore = create<AuthState>(
+// Create the Zustand store with persistence
+export const AuthStore = create<AuthStore>()(
   persist(
-    (set, get) => ({
-      user: null,
-      token: null,
-      isAuthenticated: false,
+    (set) => ({
+      token: storage.getItem("token"),
+      mmkvEmail: storage.getItem("mmkvEmail"),
 
-      register: async (userData) => {
-        const response = await registerUser(userData);
-        if (response.success) {
-          set({ user: response.user, isAuthenticated: true });
-        }
+      setToken: (token: string) => {
+        set({ token });
+        storage.setItem("token", token);
       },
 
-      login: async (credentials) => {
-        const response = await loginUser(credentials);
-        if (response.success) {
-          storage.set("authToken", response.token); // Save token to MMKV
-          set({
-            user: response.user,
-            token: response.token,
-            isAuthenticated: true,
-          });
-        }
+      setmmkvEmail: (mmkvEmail: string) => {
+        set({ mmkvEmail });
+        storage.setItem("mmkvEmail", mmkvEmail);
       },
 
-      verifyOtp: async (email, verificationCode) => {
-        const response = await verifyUserOtp(email, verificationCode);
-        if (response.success) {
-          // Handle successful OTP verification
-        }
+      removemmkvEmail: () => {
+        set({ mmkvEmail: null });
+        storage.removeItem("mmkvEmail");
       },
 
-      logout: () => {
-        storage.delete("authToken"); // Remove token from MMKV
-        set({ user: null, token: null, isAuthenticated: false });
+      removeToken: () => {
+        set({ token: null, mmkvEmail: null });
+        storage.removeItem("token");
+        storage.removeItem("mmkvEmail");
       },
     }),
     {
-      name: "auth-storage", // The name of the storage file in MMKV
-      getStorage: () => ({
-        getItem: (key) => storage.getString(key),
-        setItem: (key, value) => storage.set(key, value),
-        removeItem: (key) => storage.delete(key),
-      }),
+      name: "auth-storage",
+      storage: {
+        getItem: (key: string) => {
+          return storage.getItem(key);
+        },
+        setItem: (key: string, value: any) => {
+          storage.setItem(key, value);
+        },
+        removeItem: (key: string) => {
+          storage.removeItem(key);
+        },
+      },
     }
   )
 );

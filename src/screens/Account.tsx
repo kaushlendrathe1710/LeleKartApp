@@ -13,10 +13,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { BottomTabParamList } from "../navigation/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FindUser } from "src/services/api/userApi";
 
 const Account: React.FC = () => {
   const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
+  const [email, setEmail] = useState<any>();
+  const [userData,setUserData]=useState()
   const fadeAnim = useRef(new Animated.Value(1)).current;
   // Properly define the navigation hook with BottomTabParamList type
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
@@ -46,43 +50,65 @@ const Account: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const getEmail = async () => {
+    try {
+      const email = await AsyncStorage.getItem("lelekartEmail");
+      setEmail(email);
+      return email;
+    } catch (error) {
+      console.error("Error retrieving email:", error);
+    }
+  };
+
+  useEffect(() => {
+    getEmail();
+    const data =FindUser();
+    // setUserData(data);
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* Account  */}
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: "#f8f8f8",
-          paddingVertical: 30,
-        }}
-      >
-        <View style={styles.defaultImgContainer}>
-          <Animated.Image
-            style={[styles.profileImg, { opacity: fadeAnim }]}
-            source={
-              isBoy
-                ? require("../../assets/myImages/boy.png")
-                : require("../../assets/myImages/girl.png")
-            }
-          />
-        </View>
-        <TouchableOpacity
-          style={[styles.accountBtn]}
-          onPress={() => navigation.navigate("Login")}
+      {(
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "#f8f8f8",
+            paddingVertical: 30,
+          }}
         >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
+          <View style={styles.defaultImgContainer}>
+            <Animated.Image
+              style={[styles.profileImg, { opacity: fadeAnim }]}
+              source={
+                isBoy
+                  ? require("../../assets/myImages/boy.png")
+                  : require("../../assets/myImages/girl.png")
+              }
+            />
+          </View>
+          <TouchableOpacity
+            style={[styles.accountBtn]}
+            onPress={() => navigation.navigate("Login")}
           >
-            Login/Signup
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: "white",
+                fontSize: 20,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Login/Signup
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <View>
+        <Text>{email && email}</Text>
       </View>
     </View>
   );

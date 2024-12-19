@@ -11,6 +11,7 @@ import CustomLoading from "src/components/common/CustomLoading";
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 const Login: React.FC = () => {
+
   const { showToast } = useToast();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -31,7 +32,7 @@ const Login: React.FC = () => {
       showToast("Please fill Password", "info", 2000);
       return; // Exit the function if email is invalid
     }
-    await loginUser(email, password, showToast, setLoading);
+    await loginUser(email, password, showToast, setLoading, navigation);
   };
 
   return (
@@ -101,7 +102,6 @@ const Login: React.FC = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          
         </View>
       )}
     </View>

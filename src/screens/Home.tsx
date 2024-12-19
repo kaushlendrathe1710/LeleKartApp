@@ -1,10 +1,12 @@
+import { useTheme } from "@react-navigation/native";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const Home: React.FC = () => {
+  const {colors}=useTheme()
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Home Screen</Text>
+      <Text style={[styles.title,{color:colors.text}]}>Welcome to the Home Screen</Text>
       {/* Add other components like product lists or banners here */}
     </View>
   );

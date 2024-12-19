@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CButton from "src/components/common/CButton";
+import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
 import { BottomTabParamList } from "src/navigation/types";
 import { verifyUserOtp } from "src/services/api/authApi";
@@ -27,8 +28,6 @@ const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
   const inputRefs = useRef<Array<TextInput | null>>([]);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState<boolean>(false);
-  console.log(email);
-
   // ---change positon of input as filled aur empty ---
   const handleChange = (text: string, index: number) => {
     const newOtp = [...otp];
@@ -64,29 +63,43 @@ const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
           </View>
         </TouchableOpacity>
       </View>
-      <Text style={styles.title}>Verify Otp here</Text>
-      <View style={styles.otpContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            style={[
-              styles.otpInput,
-              { borderColor: colors.text },
-              { color: colors.text },
-            ]}
-            keyboardType="numeric"
-            maxLength={1}
-            value={digit}
-            onChangeText={(text) => handleChange(text, index)}
-            ref={(ref) => (inputRefs.current[index] = ref)}
-          />
-        ))}
-      </View>
-      <View>
-        <TouchableOpacity onPress={confirmOtp}>
-          <CButton buttonText="Confirm" />
-        </TouchableOpacity>
-      </View>
+
+      {loading && (
+        <View style={{ display: "flex", flexDirection: "column", gap: 50 }}>
+          <CustomLoading size={250} />
+          <Text style={{ textAlign: "center", paddingTop: -40 }}>
+            Checking verificatin code, Please Wait...{" "}
+          </Text>
+        </View>
+      )}
+
+      {!loading && <Text style={styles.title}>Verify Otp here</Text>}
+      {!loading && (
+        <View style={styles.otpContainer}>
+          {otp.map((digit, index) => (
+            <TextInput
+              key={index}
+              style={[
+                styles.otpInput,
+                { borderColor: colors.text },
+                { color: colors.text },
+              ]}
+              keyboardType="numeric"
+              maxLength={1}
+              value={digit}
+              onChangeText={(text) => handleChange(text, index)}
+              ref={(ref) => (inputRefs.current[index] = ref)}
+            />
+          ))}
+        </View>
+      )}
+      {!loading && (
+        <View>
+          <TouchableOpacity onPress={confirmOtp}>
+            <CButton buttonText="Confirm" />
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

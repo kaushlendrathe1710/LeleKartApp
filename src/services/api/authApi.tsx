@@ -1,8 +1,7 @@
 // src/services/authService.tsx
 import axios from "axios";
-import { BASE_URL } from "../config"; // Replace with your API URL
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { BottomTabParamList } from "src/navigation/types";
+import { BASE_URL } from "../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Register API
 export const registerUser = async (
@@ -28,10 +27,11 @@ export const registerUser = async (
       },
       { timeout: 10000 }
     );
-    console.log(response.data);
+
     navigation.navigate("VerifyOtp", {
       email: email,
     });
+
     showToast(`${response.data.message}`, "success", "3000");
     return { success: true, user: response.data };
   } catch (error: any) {
@@ -60,9 +60,11 @@ export const loginUser = async (
   email: string,
   password: string,
   showToast: any,
-  setLoading: any
+  setLoading: any,
+  // setToken: any,
+  // setmmkvEmail: any,
+  navigation: any
 ) => {
-  console.log(email, password);
   try {
     setLoading(true);
     const response = await axios.post(
@@ -73,8 +75,13 @@ export const loginUser = async (
       },
       { timeout: 5000 } // Set timeout to 5000ms (5 seconds)
     );
-    console.log(response.data);
+    console.log(response.data.user.email);
+    await AsyncStorage.setItem("lelekartEmail", response.data.user.email);
+    await AsyncStorage.setItem("token", response?.data?.token);
+    // setmmkvEmail(response?.data?.user.email);
+    // setToken(response?.data?.token);
     showToast(`${response.data.message}`, "success", "2000");
+    navigation.navigate("Main");
     return {
       success: true,
       user: response.data.user,
@@ -89,9 +96,14 @@ export const loginUser = async (
         "2000"
       );
     } else {
-      showToast(`${error.response?.data || error.message}`, "error", "2000");
+      showToast(
+        `${error.response?.data.message || error.message}`,
+        "error",
+        "2000"
+      );
     }
-    console.error("Login Error:", error.response?.data || error.message);
+    showToast(`${error.response?.data.message}`, "error", "2000");
+    console.error("Login Error:-", error.response?.data || error.message);
     return {
       success: false,
       error: error.response?.data?.message || "Login failed",
