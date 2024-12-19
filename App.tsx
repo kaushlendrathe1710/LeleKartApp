@@ -4,14 +4,13 @@ import {
   SafeAreaView,
   useColorScheme,
   StatusBar,
+  View,
+  Button,
 } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { lightTheme, darkTheme } from "./src/utils/theme/theme";
 import AppNavigator from "./src/navigation/AppNavigatior";
-
-const Stack = createNativeStackNavigator();
-
+import {ToastProvider} from "./src/context/ToastContext"
 export default function App() {
   const colorScheme = useColorScheme();
   const [theme, setTheme] = useState(lightTheme);
@@ -22,14 +21,18 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ToastProvider>
+
       <NavigationContainer theme={theme}>
         <StatusBar
           barStyle={colorScheme === "dark" ? "dark-content" : "dark-content"}
           // translucent={true}
-          // backgroundColor="transparent"
+          backgroundColor="transparent"
         />
         <AppNavigator />
       </NavigationContainer>
+      </ToastProvider>
+    
     </SafeAreaView>
   );
 }

@@ -4,15 +4,32 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { BottomTabParamList } from "../../navigation/types";
 import Icon from "react-native-vector-icons/Ionicons";
 import CustomInput from "../../components/common/CustomInput";
-
+import { useToast } from "src/context/ToastContext";
+import { registerUser } from "src/services/api/authApi";
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const SignUp: React.FC = () => {
+  const { showToast } = useToast();
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
-
+  const handleSignUp = async () => {
+    if (!email) {
+      showToast("Please fill email", "info", 2000);
+      return; // Exit the function if email is invalid
+    }
+    if (!emailRegex.test(email)) {
+      showToast("Please fill correct email", "info", 2000);
+      return; // Exit the function if email is invalid
+    }
+    if (!password) {
+      showToast("Please fill Password", "info", 2000);
+      return; // Exit the function if email is invalid
+    }
+    await registerUser(email);
+  };
   return (
     <View style={styles.container}>
       {/* Back button */}

@@ -6,17 +6,20 @@ interface CustomInputProps {
   placeholder?: string;
   setText?: (text: string) => void;
   iconName?: string;
+  value: any;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
   setText,
   placeholder,
   iconName,
+  value,
 }) => {
   return (
     <View style={styles.InputContainer}>
       {iconName && <Icon name={iconName} size={28} color="black" />}
       <TextInput
+        value={value}
         placeholder={placeholder}
         onChangeText={(text) => setText && setText(text)}
         style={styles.input}
