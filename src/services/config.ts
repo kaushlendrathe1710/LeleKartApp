@@ -5,4 +5,4 @@ const LOCAL_IP = "192.168.31.240"; // Replace with your machine's local IP addre
 
 // export const BASE_URL = "https://lelekartappbackend.onrender.com";
 export const BASE_URL = "http://192.168.31.240:3000";
-// 
+//

@@ -17,14 +17,16 @@ import { ScreensParamList } from "../navigation/types";
 import { AuthStore } from "src/services/storage/authStore";
 import CustomModal from "src/components/common/CModal";
 import RedirectOption from "src/components/common/accontScreen/CRedirectOption";
+import jwt_decode from "jwt-decode";
 
 const Account: React.FC = () => {
   const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const navigation = useNavigation<NavigationProp<ScreensParamList>>();
-  const { isAuthenticated, userDetails, logout } = AuthStore();
+  const { isAuthenticated, userDetails, logout, token } = AuthStore();
   const [modalVisible, setModalVisible] = useState(false);
+
 
   const handleLogout = () => {
     setModalVisible(true);

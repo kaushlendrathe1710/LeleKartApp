@@ -100,3 +100,17 @@ const decodeJWT = (token: string) => {
   const decoded = JSON.parse(atob(payload));
   return decoded;
 };
+
+// Call this function when the app starts or when the app is loaded
+const autoLogoutIfExpired = () => {
+  const store = AuthStore.getState();
+  const isExpired = store.checkTokenExpiry();
+  if (isExpired) {
+    store.logout(); // Automatically log out if token is expired
+  }
+};
+
+// Set an interval to check for token expiry and auto-logout
+setInterval(() => {
+  autoLogoutIfExpired();
+}, 60000); // Check every 60 seconds (1 minute)
