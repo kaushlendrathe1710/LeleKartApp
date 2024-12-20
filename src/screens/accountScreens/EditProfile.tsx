@@ -124,8 +124,10 @@ const styles = StyleSheet.create({
   },
   contentText: {
     marginTop:20,
+    marginBottom:10,
     fontSize: 18,
     paddingTop: 20,
+    fontWeight:"bold",
     color: "#444",
     textAlign: "center",
   },
