@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { BottomTabParamList } from "../../navigation/types";
+import { ScreensParamList } from "../../navigation/types";
 import Icon from "react-native-vector-icons/Ionicons";
 import CustomInput from "../../components/common/CustomInput";
 import { useToast } from "src/context/ToastContext";
@@ -20,7 +20,7 @@ const SignUp: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
 
   console.log(loading);
 

@@ -76,6 +76,7 @@ export const loginUser = async (
       { timeout: 5000 }
     );
     const { token, user } = await response.data;
+    
     // Store token and email using Zustand store
     await AuthStore.getState().setToken(token);
     await AuthStore.getState().setSavedEmail(user.email);

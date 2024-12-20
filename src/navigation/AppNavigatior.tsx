@@ -8,21 +8,11 @@ import SignUp from "../screens/authScreens/SignUp";
 import VerifyOtp from "../screens/authScreens/VerifyOtp";
 import Login from "../screens/authScreens/Login";
 import Home from "../screens/Home";
-
-// Define the type for the stack's parameters
-export type RootStackParamList = {
-  Main: any;
-  Wishlist: any; 
-  Cart: any; 
-  SearchProducts: any;
-  Login: any;
-  SignUp: any;
-  VerifyOtp: { email: string; phone: string };
-  Home: any;
-};
+import EditProfile from "src/screens/accountScreens/EditProfile";
+import { ScreensParamList } from "./types";
 
 // Create the stack with the defined parameters
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<ScreensParamList>();
 
 const AppNavigator: React.FC = () => {
   //   const { token } = useAuthStore();
@@ -68,6 +58,13 @@ const AppNavigator: React.FC = () => {
         options={{ headerShown: false }}
         name="VerifyOtp"
         component={VerifyOtp}
+      />
+      {/* Account page all navigation  */}
+
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="EditProfile"
+        component={EditProfile}
       />
     </Stack.Navigator>
   );

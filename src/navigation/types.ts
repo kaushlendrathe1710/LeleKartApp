@@ -1,4 +1,4 @@
-export type BottomTabParamList = {
+export type ScreensParamList = {
   Categories: any;
   Account: any;
   Main: any; // No params for Main
@@ -9,4 +9,5 @@ export type BottomTabParamList = {
   SignUp: any;
   VerifyOtp: { email: string; phone: string };
   Home: any;
+  EditProfile:any;
 };

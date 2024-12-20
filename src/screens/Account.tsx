@@ -11,17 +11,32 @@ import {
   Image,
   Animated,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
-import { BottomTabParamList } from "../navigation/types";
+import { ScreensParamList } from "../navigation/types";
 import { AuthStore } from "src/services/storage/authStore";
 import Icon from "react-native-vector-icons/Ionicons";
+import CustomModal from "src/components/common/CModal";
+import RedirectOption from "src/components/common/accontScreen/CRedirectOption";
 
 const Account: React.FC = () => {
   const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
-  const { token, SavedEmail, isAuthenticated, userDetails } = AuthStore();
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
+  const { isAuthenticated, userDetails, logout } = AuthStore();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleLogout = () => {
+    setModalVisible(true);
+  };
+  const onOk = () => {
+    logout();
+    setModalVisible(false);
+  };
+  const onCancel = () => {
+    setModalVisible(false);
+  };
 
   const toggleImage = () => {
     Animated.timing(fadeAnim, {
@@ -30,8 +45,6 @@ const Account: React.FC = () => {
       useNativeDriver: true,
     }).start(() => {
       setIsBoy((prev) => !prev);
-
-      // Fade in
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 250,
@@ -42,247 +55,134 @@ const Account: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(toggleImage, 1500);
-
     return () => clearInterval(interval);
   }, []);
-
+  const navigateToEditProfile = () => {
+    // Perform navigation after the component has fully rendered
+    setTimeout(() => {
+      navigation.navigate("EditProfile");
+    }, 0);
+  };
   return (
-    <View style={styles.container}>
-      {/*dummy Account  */}
-      {!isAuthenticated && (
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            backgroundColor: "#f8f8f8",
-            paddingVertical: 30,
-          }}
-        >
-          <View style={styles.defaultImgContainer}>
-            <Animated.Image
-              style={[styles.profileImg]}
-              source={
-                isBoy
-                  ? require("../../assets/myImages/boy.png")
-                  : require("../../assets/myImages/girl.png")
-              }
-            />
-          </View>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {!isAuthenticated ? (
+        <View style={styles.authContainer}>
+          <Animated.Image
+            style={[styles.profileImg, { opacity: fadeAnim }]}
+            source={
+              isBoy
+                ? require("../../assets/myImages/boy.png")
+                : require("../../assets/myImages/girl.png")
+            }
+          />
           <TouchableOpacity
             style={[styles.accountBtn]}
             onPress={() => navigation.navigate("Login")}
           >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 20,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              Login/Signup
-            </Text>
+            <Text style={styles.loginText}>Login/Signup</Text>
           </TouchableOpacity>
         </View>
-      )}
-      {/* userDetails  */}
-      {isAuthenticated && (
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#f8f8f8",
-            paddingVertical: 30,
-            gap: 10,
-            paddingHorizontal: 30,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              top: "10%",
-              right: "5%",
-              backgroundColor: "white",
-              padding: 5,
-              paddingHorizontal: 10,
-              borderRadius: 4,
-            }}
-          >
-            <Text style={{ color: "#1597FF" }}>Edit</Text>
-          </TouchableOpacity>
-          <View style={styles.defaultImgContainer}>
-            {userDetails && userDetails.user && userDetails.user.image ? (
-              <Image
-                style={styles.profileImg}
-                source={{ uri: userDetails.user.image }}
-              />
-            ) : (
-              <Image
-                style={styles.profileImg}
-                source={require("../../assets/myImages/boy.png")}
-              />
-            )}
-          </View>
-
-          <View
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              flexWrap: "wrap",
-            }}
-          >
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 20,
-                fontWeight: "bold",
-                marginBottom: 5,
-              }}
-            >
-              {userDetails.user.name}
+      ) : (
+        <View style={styles.userContainer}>
+          <Image
+            style={styles.profileImg}
+            source={
+              userDetails?.user?.image
+                ? { uri: userDetails.user.image }
+                : require("../../assets/myImages/boy.png")
+            }
+          />
+          <View>
+            <Text style={[styles.userName, { color: colors.text }]}>
+              {userDetails?.user?.name}
             </Text>
-
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 14,
-              }}
-            >
-              {userDetails.user.email}
+            <Text style={[styles.userDetails, { color: colors.text }]}>
+              {userDetails?.user?.email}
             </Text>
-            {userDetails.user?.phone && (
-              <Text
-                style={{
-                  color: colors.text,
-                  fontSize: 14,
-                }}
-              >
+            {userDetails?.user?.phone && (
+              <Text style={[styles.userDetails, { color: colors.text }]}>
                 {userDetails.user.phone}
               </Text>
             )}
-            <Text
-              style={{
-                color: colors.text,
-                fontSize: 14,
-                marginBottom: 5,
-              }}
-            >
-              {userDetails.user.gender}
+            <Text style={[styles.userDetails, { color: colors.text }]}>
+              {userDetails?.user?.gender}
             </Text>
           </View>
         </View>
       )}
-      {/* page redirect  */}
-      {isAuthenticated && (
-        <View>
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Your Orders</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
 
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>EditProfile</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
+      <ScrollView>
+        {isAuthenticated && (
+          <>
+            <RedirectOption
+              text={"Edit Profile"}
+              onPress={() => navigation.navigate("EditProfile")}
+            />
 
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Addresses</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
+            <RedirectOption
+              text={"Your Order"}
+              onPress={() => navigation.navigate("EditProfile")}
+            />
 
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>ResetPassword</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>DeleteAccount</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity> */}
-        </View>
-      )}
+            <RedirectOption
+              text={"Address"}
+              onPress={() => navigation.navigate("EditProfile")}
+            />
 
-{/* Always shown options */}
-      {
-        <View>
-          <View
-            style={{ height: 20, width: "100%", backgroundColor: "#f8f8f8" }}
-          ></View>
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Privacy policy</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Payment</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
+            <RedirectOption
+              text={"Reset Password"}
+              onPress={() => navigation.navigate("EditProfile")}
+            />
+          </>
+        )}
+        <View style={styles.separator} />
+        <RedirectOption
+          text={"Privacy Policy"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
+        <RedirectOption
+          text={"Payment"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
+        <RedirectOption
+          text={"Shipping and Returns"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
+        <RedirectOption
+          text={"Cancellation and Refund"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
+        <RedirectOption
+          text={"Security"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
+        <RedirectOption
+          text={"Contact Us"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
+        <RedirectOption
+          text={"About Us"}
+          onPress={() => navigation.navigate("EditProfile")}
+        />
 
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Shipping and return</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Cancellation and refund</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Security</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>Contact us</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.pageRedirect}>
-            <Text style={styles.pageRedirectText}>About us</Text>
-            <Icon
-              name="chevron-forward-outline"
-              style={styles.pageRedirectIcon}
-            ></Icon>
-          </TouchableOpacity>
-        </View>
-      }
-
-
-
+        <CustomModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onOk={onOk}
+          onCancel={onCancel}
+          title="Confirm Logout"
+          message="Are you sure you want to log out?"
+        />
+        {isAuthenticated && (
+          <View style={styles.logoutContainer}>
+            <TouchableOpacity onPress={handleLogout}>
+              <View style={styles.logoutBtn}>
+                <Text style={styles.logoutText}>Logout</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -290,52 +190,78 @@ const Account: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
   },
-  defaultImgContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    overflow: "hidden",
-    backgroundColor: "#1597FF",
+  authContainer: {
+    alignItems: "center",
+    paddingVertical: 30,
+    backgroundColor: "#f8f8f8",
   },
   accountBtn: {
-    paddingHorizontal: 50,
-    marginVertical: 20,
-    padding: 10,
     backgroundColor: "black",
-    opacity: 1,
     borderRadius: 7,
-    display: "flex",
+    padding: 10,
+    paddingHorizontal: 50,
+    marginTop: 20,
+  },
+  loginText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  userContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f8f8f8",
+    gap: 20,
   },
   profileImg: {
     width: 100,
     height: 100,
     borderRadius: 50,
   },
-  title: {
+  userName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
-    marginTop: 20,
+    marginBottom: 5,
+  },
+  userDetails: {
+    fontSize: 14,
   },
   pageRedirect: {
-    display: "flex",
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderTopColor: "grey",
+    alignItems: "center",
+    padding: 15,
+    borderTopColor: "#DCDCDC",
     borderTopWidth: 0.2,
   },
-  pageRedirectText: { fontSize: 16 },
+  pageRedirectText: {
+    fontSize: 16,
+  },
   pageRedirectIcon: {
     fontSize: 20,
-    fontWeight: "bold",
     color: "black",
+  },
+  separator: {
+    height: 20,
+    backgroundColor: "#f8f8f8",
+  },
+  logoutContainer: {
+    alignItems: "center",
+    marginVertical: 20,
+    width: "100%",
+  },
+  logoutBtn: {
+    borderWidth: 2,
+    borderColor: "#DCDCDC",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    width: 250,
+  },
+  logoutText: {
+    textAlign: "center",
   },
 });
 

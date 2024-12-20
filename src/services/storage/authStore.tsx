@@ -56,7 +56,12 @@ export const AuthStore = create<AuthStore>()(
       },
 
       logout: () => {
-        set({ token: null, SavedEmail: null, userDetails: null }); // Clear all data from the store
+        set({
+          token: null,
+          SavedEmail: null,
+          userDetails: null,
+          isAuthenticated: false,
+        }); // Clear all data from the store
         AsyncStorage.removeItem("auth-storage"); // Remove all data from AsyncStorage
       },
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { BottomTabParamList } from "../../navigation/types";
+import { ScreensParamList } from "../../navigation/types";
 import Icon from "react-native-vector-icons/Ionicons";
 import CustomInput from "../../components/common/CustomInput";
 import { loginUser } from "src/services/api/authApi";
@@ -17,7 +17,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   // Properly define the navigation hook with BottomTabParamList type
-  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
 
   const handleLogin = async () => {
     if (!email) {

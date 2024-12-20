@@ -15,7 +15,11 @@ const CButton: React.FC<CustomInputProps> = ({ buttonText }) => {
 };
 
 const styles = StyleSheet.create({
-  InputContainer: {},
+  InputContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
   input: {
     backgroundColor: "#1A2421",
     padding: 10,

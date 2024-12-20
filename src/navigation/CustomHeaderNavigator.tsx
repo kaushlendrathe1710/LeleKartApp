@@ -8,13 +8,13 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { BottomTabParamList } from "../navigation/types";
+import { ScreensParamList } from "../navigation/types";
 const CustomHeader: React.FC<{ showSearchInput?: boolean; page?: string }> = ({
   showSearchInput = true,
   page,
 }) => {
   // Properly define the navigation hook with BottomTabParamList type
-  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   return (
     <View style={styles.header}>
       {showSearchInput ? (
