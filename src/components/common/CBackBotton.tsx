@@ -1,11 +1,14 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { ScreensParamList } from "src/navigation/types";
 
-const BackButton = ({ onPress }) => {
+const BackButton = ( ) => {
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   return (
     <View style={styles.backButtonContainer}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
         <View style={styles.backButton}>
           <Icon name="arrow-back" size={28} color="black" />
         </View>
@@ -19,7 +22,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 30,
-    zIndex:100
+    zIndex: 100,
   },
   backButton: {
     display: "flex",

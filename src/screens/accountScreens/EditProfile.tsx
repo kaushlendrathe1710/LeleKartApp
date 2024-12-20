@@ -60,7 +60,7 @@ const EditProfile: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <BackButton onPress={() => navigation.goBack()} />
+      <BackButton />
       {!loading && <Text style={styles.contentText}>Edit Your Profile</Text>}
       {!loading && (
         <View>
@@ -120,11 +120,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8f8f8",
-    padding: 20,
   },
   contentText: {
-    marginTop:20,
-    marginBottom:10,
+    marginBottom:50,
     fontSize: 18,
     paddingTop: 20,
     fontWeight:"bold",

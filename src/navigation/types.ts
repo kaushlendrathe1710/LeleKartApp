@@ -9,5 +9,6 @@ export type ScreensParamList = {
   SignUp: any;
   VerifyOtp: { email: string; phone: string };
   Home: any;
-  EditProfile:any;
+  EditProfile: any;
+  YourOrders:any;
 };

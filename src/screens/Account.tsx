@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { ScreensParamList } from "../navigation/types";
 import { AuthStore } from "src/services/storage/authStore";
-import Icon from "react-native-vector-icons/Ionicons";
 import CustomModal from "src/components/common/CModal";
 import RedirectOption from "src/components/common/accontScreen/CRedirectOption";
 
@@ -121,7 +120,7 @@ const Account: React.FC = () => {
 
             <RedirectOption
               text={"Your Order"}
-              onPress={() => navigation.navigate("EditProfile")}
+              onPress={() => navigation.navigate("YourOrders")}
             />
 
             <RedirectOption

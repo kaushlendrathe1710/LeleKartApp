@@ -10,6 +10,7 @@ import Login from "../screens/authScreens/Login";
 import Home from "../screens/Home";
 import EditProfile from "src/screens/accountScreens/EditProfile";
 import { ScreensParamList } from "./types";
+import YourOrder from "src/screens/accountScreens/YourOrders";
 
 // Create the stack with the defined parameters
 const Stack = createNativeStackNavigator<ScreensParamList>();
@@ -65,6 +66,11 @@ const AppNavigator: React.FC = () => {
         options={{ headerShown: false }}
         name="EditProfile"
         component={EditProfile}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="YourOrders"
+        component={YourOrder}
       />
     </Stack.Navigator>
   );
