@@ -2,6 +2,8 @@
 import axios from "axios";
 import { BASE_URL } from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthStore } from "../storage/authStore";
+import { FindUser } from "./userApi";
 
 // Register API
 export const registerUser = async (
@@ -61,8 +63,6 @@ export const loginUser = async (
   password: string,
   showToast: any,
   setLoading: any,
-  // setToken: any,
-  // setmmkvEmail: any,
   navigation: any
 ) => {
   try {
@@ -73,23 +73,19 @@ export const loginUser = async (
         email,
         password,
       },
-      { timeout: 5000 } // Set timeout to 5000ms (5 seconds)
+      { timeout: 5000 }
     );
-    console.log(response.data.user.email);
-    await AsyncStorage.setItem("lelekartEmail", response.data.user.email);
-    await AsyncStorage.setItem("token", response?.data?.token);
-    // setmmkvEmail(response?.data?.user.email);
-    // setToken(response?.data?.token);
+    const { token, user } = await response.data;
+    // Store token and email using Zustand store
+    await AuthStore.getState().setToken(token);
+    await AuthStore.getState().setSavedEmail(user.email);
+    await FindUser(user.email, token);
     showToast(`${response.data.message}`, "success", "2000");
     navigation.navigate("Main");
-    return {
-      success: true,
-      user: response.data.user,
-      token: response.data.token,
-    };
+    return;
   } catch (error: any) {
+    // Handle timeout or other errors
     if (error.code === "ECONNABORTED") {
-      // Handle timeout error
       showToast(
         "The request timed out. Please try again later.",
         "error",
@@ -102,8 +98,9 @@ export const loginUser = async (
         "2000"
       );
     }
-    showToast(`${error.response?.data.message}`, "error", "2000");
     console.error("Login Error:-", error.response?.data || error.message);
+
+    // Return failure response
     return {
       success: false,
       error: error.response?.data?.message || "Login failed",

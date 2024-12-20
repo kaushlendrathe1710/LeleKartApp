@@ -13,20 +13,17 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { BottomTabParamList } from "../navigation/types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FindUser } from "src/services/api/userApi";
+import { AuthStore } from "src/services/storage/authStore";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const Account: React.FC = () => {
   const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
-  const [email, setEmail] = useState<any>();
-  const [userData,setUserData]=useState()
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  // Properly define the navigation hook with BottomTabParamList type
   const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
-  // Function to handle fade transition
+  const { token, SavedEmail, isAuthenticated, userDetails } = AuthStore();
+
   const toggleImage = () => {
-    // Fade out
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 250,
@@ -43,33 +40,16 @@ const Account: React.FC = () => {
     });
   };
 
-  // Toggle the image every 500 milliseconds
   useEffect(() => {
     const interval = setInterval(toggleImage, 1500);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getEmail = async () => {
-    try {
-      const email = await AsyncStorage.getItem("lelekartEmail");
-      setEmail(email);
-      return email;
-    } catch (error) {
-      console.error("Error retrieving email:", error);
-    }
-  };
-
-  useEffect(() => {
-    getEmail();
-    const data =FindUser();
-    // setUserData(data);
-  }, []);
-
   return (
     <View style={styles.container}>
-      {/* Account  */}
-      {(
+      {/*dummy Account  */}
+      {!isAuthenticated && (
         <View
           style={{
             display: "flex",
@@ -81,7 +61,7 @@ const Account: React.FC = () => {
         >
           <View style={styles.defaultImgContainer}>
             <Animated.Image
-              style={[styles.profileImg, { opacity: fadeAnim }]}
+              style={[styles.profileImg]}
               source={
                 isBoy
                   ? require("../../assets/myImages/boy.png")
@@ -106,10 +86,203 @@ const Account: React.FC = () => {
           </TouchableOpacity>
         </View>
       )}
+      {/* userDetails  */}
+      {isAuthenticated && (
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#f8f8f8",
+            paddingVertical: 30,
+            gap: 10,
+            paddingHorizontal: 30,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              top: "10%",
+              right: "5%",
+              backgroundColor: "white",
+              padding: 5,
+              paddingHorizontal: 10,
+              borderRadius: 4,
+            }}
+          >
+            <Text style={{ color: "#1597FF" }}>Edit</Text>
+          </TouchableOpacity>
+          <View style={styles.defaultImgContainer}>
+            {userDetails && userDetails.user && userDetails.user.image ? (
+              <Image
+                style={styles.profileImg}
+                source={{ uri: userDetails.user.image }}
+              />
+            ) : (
+              <Image
+                style={styles.profileImg}
+                source={require("../../assets/myImages/boy.png")}
+              />
+            )}
+          </View>
 
-      <View>
-        <Text>{email && email}</Text>
-      </View>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "flex-start",
+              flexWrap: "wrap",
+            }}
+          >
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 20,
+                fontWeight: "bold",
+                marginBottom: 5,
+              }}
+            >
+              {userDetails.user.name}
+            </Text>
+
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 14,
+              }}
+            >
+              {userDetails.user.email}
+            </Text>
+            {userDetails.user?.phone && (
+              <Text
+                style={{
+                  color: colors.text,
+                  fontSize: 14,
+                }}
+              >
+                {userDetails.user.phone}
+              </Text>
+            )}
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 14,
+                marginBottom: 5,
+              }}
+            >
+              {userDetails.user.gender}
+            </Text>
+          </View>
+        </View>
+      )}
+      {/* page redirect  */}
+      {isAuthenticated && (
+        <View>
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Your Orders</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>EditProfile</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Addresses</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>ResetPassword</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+          {/* <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>DeleteAccount</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity> */}
+        </View>
+      )}
+
+{/* Always shown options */}
+      {
+        <View>
+          <View
+            style={{ height: 20, width: "100%", backgroundColor: "#f8f8f8" }}
+          ></View>
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Privacy policy</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Payment</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Shipping and return</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Cancellation and refund</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Security</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>Contact us</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.pageRedirect}>
+            <Text style={styles.pageRedirectText}>About us</Text>
+            <Icon
+              name="chevron-forward-outline"
+              style={styles.pageRedirectIcon}
+            ></Icon>
+          </TouchableOpacity>
+        </View>
+      }
+
+
+
     </View>
   );
 };
@@ -147,6 +320,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     marginTop: 20,
+  },
+  pageRedirect: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderTopColor: "grey",
+    borderTopWidth: 0.2,
+  },
+  pageRedirectText: { fontSize: 16 },
+  pageRedirectIcon: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
   },
 });
 

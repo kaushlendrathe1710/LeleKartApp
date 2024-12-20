@@ -1,6 +1,12 @@
-import { Theme } from "@react-navigation/native";
+import { Theme as RNTheme } from "@react-navigation/native";
 
-export const lightTheme: Theme = {
+interface CustomTheme extends RNTheme {
+  colors: {
+    inputBackground: string;
+  } & RNTheme["colors"];
+}
+
+export const lightTheme: CustomTheme = {
   dark: false,
   colors: {
     primary: "#ffffff",
@@ -9,7 +15,7 @@ export const lightTheme: Theme = {
     card: "#ffffff",
     text: "#1B1B1B",
     inputBackground: "#f0f0f0",
-    buttonBackground: "1A2421",
+    buttonBackground: "#1A2421",
     buttonColor: "#fff",
     border: "#cccccc",
     notification: "#ff4500",
@@ -26,7 +32,7 @@ export const lightTheme: Theme = {
   },
 };
 
-export const darkTheme: Theme = {
+export const darkTheme: CustomTheme = {
   dark: true,
   colors: {
     primary: "#000000",

@@ -1,58 +1,97 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { storage } from "./storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Define the store's interface
 interface AuthStore {
   token: string | null;
-  mmkvEmail: string | null;
+  SavedEmail: string | null;
+  userDetails: any | null;
+  isAuthenticated: boolean;
   setToken: (token: string) => void;
-  setmmkvEmail: (mmkvEmail: string) => void;
-  removemmkvEmail: () => void;
+  setSavedEmail: (SavedEmail: string) => void;
+  setUserDetails: (userDetails: any) => void;
+  removeSavedEmail: () => void;
   removeToken: () => void;
+  removeUserDetails: () => void;
+  logout: () => void; // Add logout method
+  checkTokenExpiry: () => boolean; // Method to check token expiry
 }
 
-// Create the Zustand store with persistence
+// Create the Zustand store with AsyncStorage persistence
 export const AuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
-      token: storage.getItem("token"),
-      mmkvEmail: storage.getItem("mmkvEmail"),
+    (set, get) => ({
+      token: null,
+      SavedEmail: null,
+      userDetails: null,
+      isAuthenticated: false, // Initially set to false
 
       setToken: (token: string) => {
         set({ token });
-        storage.setItem("token", token);
+
+        // After setting the token, check if it's expired and set isAuthenticated accordingly
+        const isExpired = get().checkTokenExpiry();
+        set({ isAuthenticated: !isExpired });
       },
 
-      setmmkvEmail: (mmkvEmail: string) => {
-        set({ mmkvEmail });
-        storage.setItem("mmkvEmail", mmkvEmail);
+      setSavedEmail: (SavedEmail: string) => {
+        set({ SavedEmail });
       },
 
-      removemmkvEmail: () => {
-        set({ mmkvEmail: null });
-        storage.removeItem("mmkvEmail");
+      setUserDetails: (userDetails: any) => {
+        set({ userDetails });
+      },
+
+      removeSavedEmail: () => {
+        set({ SavedEmail: null });
       },
 
       removeToken: () => {
-        set({ token: null, mmkvEmail: null });
-        storage.removeItem("token");
-        storage.removeItem("mmkvEmail");
+        set({ token: null, SavedEmail: null });
+      },
+
+      removeUserDetails: () => {
+        set({ userDetails: null });
+      },
+
+      logout: () => {
+        set({ token: null, SavedEmail: null, userDetails: null }); // Clear all data from the store
+        AsyncStorage.removeItem("auth-storage"); // Remove all data from AsyncStorage
+      },
+
+      // Check if the token is expired
+      checkTokenExpiry: () => {
+        const token = get().token;
+        if (token) {
+          const decodedToken = decodeJWT(token);
+          const currentTime = Date.now() / 1000; // Get current time in seconds
+          return decodedToken.exp < currentTime; // Returns true if expired
+        }
+        return true; // If no token, treat as expired
       },
     }),
     {
-      name: "auth-storage",
+      name: "auth-storage", // Storage key
       storage: {
-        getItem: (key: string) => {
-          return storage.getItem(key);
+        getItem: async (key: string) => {
+          const value = await AsyncStorage.getItem(key);
+          return value ? JSON.parse(value) : null;
         },
-        setItem: (key: string, value: any) => {
-          storage.setItem(key, value);
+        setItem: async (key: string, value: any) => {
+          await AsyncStorage.setItem(key, JSON.stringify(value));
         },
-        removeItem: (key: string) => {
-          storage.removeItem(key);
+        removeItem: async (key: string) => {
+          await AsyncStorage.removeItem(key);
         },
       },
     }
   )
 );
+
+// Function to decode JWT token and extract expiration time (exp)
+const decodeJWT = (token: string) => {
+  const payload = token.split(".")[1];
+  const decoded = JSON.parse(atob(payload));
+  return decoded;
+};
