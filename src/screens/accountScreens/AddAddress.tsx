@@ -9,9 +9,17 @@ import {
 } from "react-native";
 import BackButton from "src/components/common/CBackBotton";
 import CButton from "src/components/common/CButton";
+import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
+import { AddUserAddress } from "src/services/api/userApi";
+import { AuthStore } from "src/services/storage/authStore";
+import { useUserStore } from "src/services/storage/userStore";
 
 const AddAddress: React.FC = ({ navigation }: any) => {
+  const { token, SavedEmail } = AuthStore();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { setAddresses } = useUserStore();
+  const { showToast } = useToast();
   const [form, setForm] = useState({
     name: "",
     country: "",
@@ -23,7 +31,6 @@ const AddAddress: React.FC = ({ navigation }: any) => {
     pinCode: "",
     number: "",
   });
-  const { showToast } = useToast();
 
   const fields = [
     { label: "Name", key: "name", placeholder: "Enter Name" },
@@ -69,6 +76,14 @@ const AddAddress: React.FC = ({ navigation }: any) => {
     if (validateForm()) {
       // Add your API call for adding a new address
       console.log("New Address:", form);
+      AddUserAddress(
+        SavedEmail,
+        token,
+        setLoading,
+        setAddresses,
+        form,
+        showToast
+      );
       navigation.goBack();
     }
   };
@@ -76,23 +91,26 @@ const AddAddress: React.FC = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <BackButton />
-      <Text style={styles.contentText}>Add New Address</Text>
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
-        {fields.map((field, index) => (
-          <View key={index} style={styles.inputContainer}>
-            <Text style={styles.label}>{field.label}</Text>
-            <TextInput
-              style={styles.input}
-              value={form[field.key]}
-              onChangeText={(text) => setForm({ ...form, [field.key]: text })}
-              placeholder={field.placeholder}
-            />
-          </View>
-        ))}
-        <TouchableOpacity style={{ marginVertical: 20 }} onPress={handleAdd}>
-          <CButton buttonText="Add Address" />
-        </TouchableOpacity>
-      </ScrollView>
+      {loading && <CustomLoading size={250} />}
+      {!loading && <Text style={styles.contentText}>Add New Address</Text>}
+      {!loading && (
+        <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+          {fields.map((field, index) => (
+            <View key={index} style={styles.inputContainer}>
+              <Text style={styles.label}>{field.label}</Text>
+              <TextInput
+                style={styles.input}
+                value={form[field.key]}
+                onChangeText={(text) => setForm({ ...form, [field.key]: text })}
+                placeholder={field.placeholder}
+              />
+            </View>
+          ))}
+          <TouchableOpacity style={{ marginVertical: 20 }} onPress={handleAdd}>
+            <CButton buttonText="Add Address" />
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </View>
   );
 };

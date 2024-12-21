@@ -79,6 +79,7 @@ const Address: React.FC = () => {
               <Text style={styles.label}>Email: </Text>
               {address?.userEmail}
             </Text>
+           
           </View>
         ))}
       </View>
@@ -95,7 +96,7 @@ const Address: React.FC = () => {
         {!loading && renderAddress()}
 
         {!loading && (
-          <TouchableOpacity onPress={() => navigation.navigate("AddAddress")}>
+          <TouchableOpacity style={{marginBottom:20}} onPress={() => navigation.navigate("AddAddress")}>
             <View style={styles.addaddresscard}>
               <Icon
                 name="add"
