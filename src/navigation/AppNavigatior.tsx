@@ -14,6 +14,7 @@ import YourOrder from "src/screens/accountScreens/YourOrders";
 import Address from "src/screens/accountScreens/Address";
 import AddAddress from "src/screens/accountScreens/AddAddress";
 import ResetPassword from "src/screens/accountScreens/ResetPasswod";
+import EditAddress from "src/screens/accountScreens/EditAddress";
 
 // Create the stack with the defined parameters
 const Stack = createNativeStackNavigator<ScreensParamList>();
@@ -84,6 +85,11 @@ const AppNavigator: React.FC = () => {
         options={{ headerShown: false }}
         name="AddAddress"
         component={AddAddress}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="EditAddress"
+        component={EditAddress}
       />
       <Stack.Screen
         options={{ headerShown: false }}

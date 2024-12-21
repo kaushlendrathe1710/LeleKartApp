@@ -1,12 +1,23 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
 import BackButton from "src/components/common/CBackBotton";
 import { getAllAddresses } from "src/services/api/userApi";
 import { AuthStore } from "src/services/storage/authStore";
+import Icon from "react-native-vector-icons/Ionicons";
+import { ScreensParamList } from "src/navigation/types";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 const Address: React.FC = () => {
   const [allAddress, setAllAddress] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const { token, SavedEmail } = AuthStore();
   useEffect(() => {
     getAllAddresses(SavedEmail, token, setLoading, setAllAddress);
@@ -17,6 +28,18 @@ const Address: React.FC = () => {
       <View>
         {allAddress?.map((address: any, index: number) => (
           <View key={index} style={styles.addressCard}>
+            {/* <Icon name="home" size={30} color="#444" /> */}
+            <TouchableOpacity
+              style={{ position: "absolute", right: 10, top: 10, width: 30 }}
+            >
+              <Icon name="trash" size={30} color="#444" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("EditAddress", { address })}
+              style={{ position: "absolute", right: 10, bottom: 10, width: 30 }}
+            >
+              <Icon name="create" size={30} color="#444" />
+            </TouchableOpacity>
             <Text style={styles.name}>{address.name}</Text>
             <Text style={styles.info}>
               <Text style={styles.label}>Country: </Text>
@@ -90,13 +113,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#grey",
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: "#ddd",
+    shadowRadius: 3,
+    elevation: 1,
+    borderWidth: 0.5,
+    borderColor: "#grey",
   },
   name: {
     fontSize: 18,
