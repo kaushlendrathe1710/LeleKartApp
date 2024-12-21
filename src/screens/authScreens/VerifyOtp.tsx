@@ -16,12 +16,12 @@ import Icon from "react-native-vector-icons/Ionicons";
 import CButton from "src/components/common/CButton";
 import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
-import { BottomTabParamList } from "src/navigation/types";
+import { ScreensParamList } from "src/navigation/types";
 import { verifyUserOtp } from "src/services/api/authApi";
 
-type VerifyOtpRouteProp = RouteProp<BottomTabParamList, "VerifyOtp">;
+type VerifyOtpRouteProp = RouteProp<ScreensParamList, "VerifyOtp">;
 const VerifyOtp = ({ route }: { route: VerifyOtpRouteProp }) => {
-  const navigation = useNavigation<NavigationProp<BottomTabParamList>>();
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const { showToast } = useToast();
   const { colors } = useTheme();
   const { email } = route.params;

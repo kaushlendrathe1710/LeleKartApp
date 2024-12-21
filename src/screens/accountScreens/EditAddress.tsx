@@ -11,7 +11,7 @@ import BackButton from "src/components/common/CBackBotton";
 import CButton from "src/components/common/CButton";
 import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
-import { updateAddress } from "src/services/api/userApi";
+import { DeleteAddress, updateAddress } from "src/services/api/userApi";
 import { AuthStore } from "src/services/storage/authStore";
 import { useUserStore } from "src/services/storage/userStore";
 

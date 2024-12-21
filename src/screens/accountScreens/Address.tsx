@@ -8,23 +8,35 @@ import {
   TouchableOpacity,
 } from "react-native";
 import BackButton from "src/components/common/CBackBotton";
-import { getAllAddresses } from "src/services/api/userApi";
+import { DeleteAddress, getAllAddresses } from "src/services/api/userApi";
 import { AuthStore } from "src/services/storage/authStore";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScreensParamList } from "src/navigation/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import SkeletonLoading from "src/components/common/SkeletonLoading";
 import { useUserStore } from "src/services/storage/userStore";
+import { useToast } from "src/context/ToastContext";
 
 const Address: React.FC = () => {
   const [loading, setLoading] = React.useState(true);
   const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const { addresses, setAddresses } = useUserStore();
+  const { showToast } = useToast();
   console.log(addresses);
   const { token, SavedEmail } = AuthStore();
   useEffect(() => {
     getAllAddresses(SavedEmail, token, setLoading, setAddresses);
   }, []);
+  const handleDeleteAddress = async (address) => {
+    DeleteAddress(
+      SavedEmail,
+      token,
+      setLoading,
+      setAddresses,
+      address,
+      showToast
+    );
+  };
   const renderAddress = () => {
     return (
       <View>
@@ -32,13 +44,14 @@ const Address: React.FC = () => {
           <View key={index} style={styles.addressCard}>
             {/* <Icon name="home" size={30} color="#444" /> */}
             <TouchableOpacity
-              style={{ position: "absolute", right: 10, top: 10, width: 30 }}
+              onPress={() => handleDeleteAddress(address)}
+              style={{ position: "absolute", right: 10, top: 10, width: 30 ,zIndex:50}}
             >
               <Icon name="trash" size={30} color="#444" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate("EditAddress", { address })}
-              style={{ position: "absolute", right: 10, bottom: 10, width: 30 }}
+              style={{ position: "absolute", right: 10, bottom: 10, width: 30,zIndex:50 }}
             >
               <Icon name="create" size={30} color="#444" />
             </TouchableOpacity>
@@ -79,7 +92,6 @@ const Address: React.FC = () => {
               <Text style={styles.label}>Email: </Text>
               {address?.userEmail}
             </Text>
-           
           </View>
         ))}
       </View>
@@ -96,7 +108,10 @@ const Address: React.FC = () => {
         {!loading && renderAddress()}
 
         {!loading && (
-          <TouchableOpacity style={{marginBottom:20}} onPress={() => navigation.navigate("AddAddress")}>
+          <TouchableOpacity
+            style={{ marginBottom: 20 }}
+            onPress={() => navigation.navigate("AddAddress")}
+          >
             <View style={styles.addaddresscard}>
               <Icon
                 name="add"

@@ -112,7 +112,7 @@ export const updateAddress = async (
     const response = await axios.post(
       `${BASE_URL}/api/user/updateUserAddress`,
       {
-        email:SavedEmail,
+        email: SavedEmail,
         name: form.name,
         phone: form.phone,
         country: form.country,
@@ -172,6 +172,46 @@ export const AddUserAddress = async (
         landmark: form.landmark,
         pinCode: form.pinCode,
         number: form.number,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    await setAddresses(response.data.addresses);
+    showToast(`${response.data.message}`, "success", 2000);
+    return;
+  } catch (error: any) {
+    showToast(
+      `${
+        (error.response?.data || error.message,
+        "Something went wrong try again later")
+      }`,
+      "error",
+      2000
+    );
+    console.log("Error updating user details:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+export const DeleteAddress = async (
+  SavedEmail,
+  token,
+  setLoading,
+  setAddresses,
+  address,
+  showToast
+) => {
+  setLoading(true);
+  console.log(address.id,SavedEmail);
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/user/addAddress`,
+      {
+        email: SavedEmail,
+        id: address.id,
       },
       {
         headers: {

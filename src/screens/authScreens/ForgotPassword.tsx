@@ -13,9 +13,9 @@ import CustomInput from "src/components/common/CustomInput";
 import { useToast } from "src/context/ToastContext";
 import { AuthStore } from "src/services/storage/authStore";
 
-const ResetPassword: React.FC = () => {
-  const { token, userDetails, SavedEmail } = AuthStore();
+const ForgotPassword: React.FC = () => {
   const inputRefs = useRef<Array<TextInput | null>>([]);
+  const [email, setEmail] = useState<string>("");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState<boolean>(false);
   const { colors } = useTheme();
@@ -26,6 +26,7 @@ const ResetPassword: React.FC = () => {
   // Step states
   const [showOtp, setShowOtp] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [otpSent, setOtpSent] = useState(false); // New state to track OTP sent status
 
   // ---Change position of input as filled or empty---
   const handleChange = (text: string, index: number) => {
@@ -41,8 +42,16 @@ const ResetPassword: React.FC = () => {
   };
 
   const sendOtp = () => {
+    // Email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!email || !emailRegex.test(email)) {
+      showToast("Please enter a valid email address.", "info", 2000);
+      return;
+    }
+
     // Simulate OTP sending
     setShowOtp(true);
+    setOtpSent(true); // Set OTP sent to true to show the confirmation message
     showToast("OTP sent to your email!", "success", 2000);
   };
 
@@ -80,15 +89,29 @@ const ResetPassword: React.FC = () => {
       {/* Back Button */}
       <BackButton />
       {/* Title */}
-      <Text style={styles.contentText}>Reset Password</Text>
+      <Text style={styles.contentText}>Forgot Password</Text>
       {/* Form Content */}
       <View style={styles.formContainer}>
         {/* Email Section */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Registered Email</Text>
-          <Text style={styles.emailText}>{SavedEmail || "Not Available"}</Text>
-        </View>
-        {!showOtp && (
+        {!otpSent && !showOtp && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Enter Registered Email</Text>
+            <TextInput
+              style={[styles.input, { borderColor: colors.text }]}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+        )}
+
+        {/* OTP Sent Message */}
+        {otpSent && !showOtp && (
+          <Text style={styles.otpSentMessage}>OTP sent to your email!</Text>
+        )}
+
+        {!showOtp && !otpSent && (
           <TouchableOpacity style={styles.buttonWrapper} onPress={sendOtp}>
             <CButton buttonText="Send OTP" />
           </TouchableOpacity>
@@ -184,10 +207,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontWeight: "600",
   },
-  emailText: {
+  input: {
     fontSize: 16,
-    fontWeight: "bold",
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: "#f0f0f0",
     color: "#333",
+  },
+  otpSentMessage: {
+    fontSize: 16,
+    color: "#28a745", // Green color for success message
+    marginBottom: 20,
+    textAlign: "center",
   },
   otpContainer: {
     flexDirection: "row",
@@ -209,4 +240,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResetPassword;
+export default ForgotPassword;

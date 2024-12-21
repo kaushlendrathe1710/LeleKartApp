@@ -11,7 +11,6 @@ import CustomLoading from "src/components/common/CustomLoading";
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 const Login: React.FC = () => {
-
   const { showToast } = useToast();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -73,7 +72,22 @@ const Login: React.FC = () => {
               setText={setPassword}
               placeholder="Enter Password"
               iconName="key"
+              secure={true}
             />
+          </View>
+
+          <View
+            style={[
+              styles.bottomTextContainer,
+              { marginTop: -20, marginBottom: 8 },
+            ]}
+          >
+            <Text style={[styles.noAccountText]}>Forgot your password? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+              <Text style={[styles.signUpText, { color: "#1597FF" }]}>
+                Reset Now
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.loginButtonContainer}>
@@ -202,7 +216,7 @@ const styles = StyleSheet.create({
   googleButton: {
     backgroundColor: "#1A2421",
     width: "50%",
-    padding: 15,
+    padding: 10,
     borderRadius: 10,
     alignItems: "center",
   },

@@ -14,5 +14,6 @@ export type ScreensParamList = {
   Address: any;
   AddAddress: any;
   ResetPassword: any;
-  EditAddress: {address: any};
+  EditAddress: { address: any };
+  ForgotPassword: any;
 };
