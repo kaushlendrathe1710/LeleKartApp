@@ -76,3 +76,25 @@ export const getALlYourOrders = async (
     setLoading(false);
   }
 };
+export const getAllAddresses = async (
+  SavedEmail,
+  token,
+  setLoading,
+  setAllAddress
+) => {
+  setLoading(true);
+  try {
+    const response = await axios.get(`${BASE_URL}/api/user/getUserAddresses`, {
+      params: { email: SavedEmail },
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the token in the headers
+      },
+    });
+    await setAllAddress(response.data.addresses);
+    return;
+  } catch (error) {
+    console.log("Error updating user details:", error);
+  } finally {
+    setLoading(false);
+  }
+};

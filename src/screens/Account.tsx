@@ -17,8 +17,6 @@ import { ScreensParamList } from "../navigation/types";
 import { AuthStore } from "src/services/storage/authStore";
 import CustomModal from "src/components/common/CModal";
 import RedirectOption from "src/components/common/accontScreen/CRedirectOption";
-import jwt_decode from "jwt-decode";
-
 const Account: React.FC = () => {
   const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
@@ -127,12 +125,12 @@ const Account: React.FC = () => {
 
             <RedirectOption
               text={"Address"}
-              onPress={() => navigation.navigate("EditProfile")}
+              onPress={() => navigation.navigate("Address")}
             />
 
             <RedirectOption
               text={"Reset Password"}
-              onPress={() => navigation.navigate("EditProfile")}
+              onPress={() => navigation.navigate("ResetPassword")}
             />
           </>
         )}

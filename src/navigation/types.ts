@@ -1,14 +1,17 @@
 export type ScreensParamList = {
   Categories: any;
   Account: any;
-  Main: any; // No params for Main
-  Wishlist: any; // No params for Wishlist
-  Cart: any; // No params for Cart
+  Main: any;
+  Wishlist: any;
+  Cart: any;
   SearchProducts: any;
   Login: any;
   SignUp: any;
   VerifyOtp: { email: string; phone: string };
   Home: any;
   EditProfile: any;
-  YourOrders:any;
+  YourOrders: any;
+  Address: any;
+  AddAddress: any;
+  ResetPassword: any;
 };
