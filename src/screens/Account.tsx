@@ -17,6 +17,7 @@ import { ScreensParamList } from "../navigation/types";
 import { AuthStore } from "src/services/storage/authStore";
 import CustomModal from "src/components/common/CModal";
 import RedirectOption from "src/components/common/accontScreen/CRedirectOption";
+import { useUserStore } from "src/services/storage/userStore";
 const Account: React.FC = () => {
   const { colors } = useTheme();
   const [isBoy, setIsBoy] = useState(true);
@@ -24,7 +25,7 @@ const Account: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const { isAuthenticated, userDetails, logout, token } = AuthStore();
   const [modalVisible, setModalVisible] = useState(false);
-
+ 
 
   const handleLogout = () => {
     setModalVisible(true);

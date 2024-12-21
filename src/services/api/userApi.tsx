@@ -80,7 +80,7 @@ export const getAllAddresses = async (
   SavedEmail,
   token,
   setLoading,
-  setAllAddress
+  setAddresses
 ) => {
   setLoading(true);
   try {
@@ -90,9 +90,59 @@ export const getAllAddresses = async (
         Authorization: `Bearer ${token}`, // Include the token in the headers
       },
     });
-    await setAllAddress(response.data.addresses);
+    await setAddresses(response.data.addresses);
     return;
   } catch (error) {
+    console.log("Error updating user details:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+export const updateAddress = async (
+  SavedEmail,
+  token,
+  setLoading,
+  setAddresses,
+  form,
+  showToast
+) => {
+  setLoading(true);
+  console.log(form.id);
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/api/user/updateUserAddress`,
+      {
+        email: form.userEmail,
+        name: form.name,
+        phone: form.phone,
+        country: form.country,
+        state: form.state,
+        city: form.city,
+        street: form.street,
+        house: form.house,
+        landmark: form.landmark,
+        pinCode: form.pinCode,
+        number: form.number,
+        id: form.id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    await setAddresses(response.data.addresses);
+    showToast(`${response.data.message}`, "success", 2000);
+    return;
+  } catch (error: any) {
+    showToast(
+      `${
+        (error.response?.data || error.message,
+        "Something went wrong try again later")
+      }`,
+      "error",
+      2000
+    );
     console.log("Error updating user details:", error);
   } finally {
     setLoading(false);

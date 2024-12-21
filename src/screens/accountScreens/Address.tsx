@@ -14,20 +14,21 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { ScreensParamList } from "src/navigation/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import SkeletonLoading from "src/components/common/SkeletonLoading";
+import { useUserStore } from "src/services/storage/userStore";
 
 const Address: React.FC = () => {
-  const [allAddress, setAllAddress] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const navigation = useNavigation<NavigationProp<ScreensParamList>>();
+  const { addresses, setAddresses } = useUserStore();
+  console.log(addresses);
   const { token, SavedEmail } = AuthStore();
   useEffect(() => {
-    getAllAddresses(SavedEmail, token, setLoading, setAllAddress);
+    getAllAddresses(SavedEmail, token, setLoading, setAddresses);
   }, []);
-  console.log(allAddress);
   const renderAddress = () => {
     return (
       <View>
-        {allAddress?.map((address: any, index: number) => (
+        {addresses?.map((address: any, index: number) => (
           <View key={index} style={styles.addressCard}>
             {/* <Icon name="home" size={30} color="#444" /> */}
             <TouchableOpacity
@@ -41,42 +42,42 @@ const Address: React.FC = () => {
             >
               <Icon name="create" size={30} color="#444" />
             </TouchableOpacity>
-            <Text style={styles.name}>{address.name}</Text>
+            <Text style={styles.name}>{address?.name}</Text>
             <Text style={styles.info}>
               <Text style={styles.label}>Country: </Text>
-              {address.country}
+              {address?.country}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>City: </Text>
-              {address.city}
+              {address?.city}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>House: </Text>
-              {address.house}
+              {address?.house}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>Landmark: </Text>
-              {address.landmark}
+              {address?.landmark}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>Street: </Text>
-              {address.street}
+              {address?.street}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>State: </Text>
-              {address.state}
+              {address?.state}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>PIN Code: </Text>
-              {address.pinCode}
+              {address?.pinCode}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>Phone: </Text>
-              {address.number}
+              {address?.number}
             </Text>
             <Text style={styles.info}>
               <Text style={styles.label}>Email: </Text>
-              {address.userEmail}
+              {address?.userEmail}
             </Text>
           </View>
         ))}
@@ -90,8 +91,8 @@ const Address: React.FC = () => {
       <Text style={styles.contentText}>Your Address</Text>
       <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
         {loading && <SkeletonLoading />}
-        {!loading && allAddress.length === 0 && <Text>No address found</Text>}
-        {renderAddress()}
+        {!loading && addresses?.length === 0 && <Text>No address found</Text>}
+        {!loading && renderAddress()}
 
         {!loading && (
           <TouchableOpacity onPress={() => navigation.navigate("AddAddress")}>

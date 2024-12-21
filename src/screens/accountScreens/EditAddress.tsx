@@ -9,12 +9,19 @@ import {
 } from "react-native";
 import BackButton from "src/components/common/CBackBotton";
 import CButton from "src/components/common/CButton";
+import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
+import { updateAddress } from "src/services/api/userApi";
+import { AuthStore } from "src/services/storage/authStore";
+import { useUserStore } from "src/services/storage/userStore";
 
 const EditAddress: React.FC = ({ route, navigation }: any) => {
   const { address } = route.params;
   const [form, setForm] = useState<any>({}); // Initialize the form state
   const { showToast } = useToast();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { token, SavedEmail } = AuthStore();
+  const { setAddresses } = useUserStore();
 
   // Define fields and map to generate input fields dynamically
   const fields = [
@@ -118,6 +125,14 @@ const EditAddress: React.FC = ({ route, navigation }: any) => {
       // Add your API call for saving the edited address
       console.log("Updated Address:", form);
       showToast("Address updated successfully", "info", 2000);
+      updateAddress(
+        SavedEmail,
+        token,
+        setLoading,
+        setAddresses,
+        form,
+        showToast
+      );
       navigation.goBack();
     }
   };
@@ -125,28 +140,31 @@ const EditAddress: React.FC = ({ route, navigation }: any) => {
   return (
     <View style={styles.container}>
       <BackButton />
-      <Text style={styles.contentText}>Edit Address</Text>
-      <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
-        {fields.map((field) => (
-          <View style={styles.fieldContainer} key={field.key}>
-            <Text style={styles.label}>{field.label}</Text>
-            <TextInput
-              style={styles.input}
-              value={form[field.key]}
-              onChangeText={(text) => setForm({ ...form, [field.key]: text })}
-              placeholder={field.placeholder}
-              keyboardType={field.type === "numeric" ? "numeric" : "default"}
-            />
-          </View>
-        ))}
+      {!loading && <Text style={styles.contentText}>Edit Address</Text>}
+      {loading && <CustomLoading size={250} />}
+      {!loading && (
+        <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+          {fields.map((field) => (
+            <View style={styles.fieldContainer} key={field.key}>
+              <Text style={styles.label}>{field.label}</Text>
+              <TextInput
+                style={styles.input}
+                value={form[field.key]}
+                onChangeText={(text) => setForm({ ...form, [field.key]: text })}
+                placeholder={field.placeholder}
+                keyboardType={field.type === "numeric" ? "numeric" : "default"}
+              />
+            </View>
+          ))}
 
-        <TouchableOpacity
-          style={{ marginTop: 10, marginBottom: 20 }}
-          onPress={handleSave}
-        >
-          <CButton buttonText="Save Address" />
-        </TouchableOpacity>
-      </ScrollView>
+          <TouchableOpacity
+            style={{ marginTop: 10, marginBottom: 20 }}
+            onPress={handleSave}
+          >
+            <CButton buttonText="Save Address" />
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -179,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#444",
     marginBottom: 0,
-    marginLeft:5,
+    marginLeft: 5,
     fontWeight: "bold",
   },
   fieldContainer: {
