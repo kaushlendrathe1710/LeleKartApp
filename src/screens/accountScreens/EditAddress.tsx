@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,61 @@ import { useToast } from "src/context/ToastContext";
 
 const EditAddress: React.FC = ({ route, navigation }: any) => {
   const { address } = route.params;
-  const [form, setForm] = useState({ ...address });
+  const [form, setForm] = useState<any>({}); // Initialize the form state
   const { showToast } = useToast();
+
+  // Define fields and map to generate input fields dynamically
+  const fields = [
+    {
+      label: "Name",
+      key: "name",
+      placeholder: "Enter your name",
+      type: "text",
+    },
+    {
+      label: "Country",
+      key: "country",
+      placeholder: "Enter country",
+      type: "text",
+    },
+    { label: "City", key: "city", placeholder: "Enter city", type: "text" },
+    {
+      label: "House",
+      key: "house",
+      placeholder: "Enter house number",
+      type: "text",
+    },
+    {
+      label: "Landmark",
+      key: "landmark",
+      placeholder: "Enter landmark",
+      type: "text",
+    },
+    {
+      label: "Street",
+      key: "street",
+      placeholder: "Enter street",
+      type: "text",
+    },
+    { label: "State", key: "state", placeholder: "Enter state", type: "text" },
+    {
+      label: "PIN Code",
+      key: "pinCode",
+      placeholder: "Enter PIN Code",
+      type: "numeric",
+    },
+    {
+      label: "Phone",
+      key: "number",
+      placeholder: "Enter phone number",
+      type: "numeric",
+    },
+  ];
+
+  useEffect(() => {
+    // Initialize the form state with the address data
+    setForm({ ...address });
+  }, [address]);
 
   const validateForm = () => {
     if (!form.name || form.name.length < 4) {
@@ -74,99 +127,23 @@ const EditAddress: React.FC = ({ route, navigation }: any) => {
       <BackButton />
       <Text style={styles.contentText}>Edit Address</Text>
       <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
-            value={form.name}
-            onChangeText={(text) => setForm({ ...form, name: text })}
-            placeholder="Enter your name"
-          />
-        </View>
+        {fields.map((field) => (
+          <View style={styles.fieldContainer} key={field.key}>
+            <Text style={styles.label}>{field.label}</Text>
+            <TextInput
+              style={styles.input}
+              value={form[field.key]}
+              onChangeText={(text) => setForm({ ...form, [field.key]: text })}
+              placeholder={field.placeholder}
+              keyboardType={field.type === "numeric" ? "numeric" : "default"}
+            />
+          </View>
+        ))}
 
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Country</Text>
-          <TextInput
-            style={styles.input}
-            value={form.country}
-            onChangeText={(text) => setForm({ ...form, country: text })}
-            placeholder="Enter country"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>City</Text>
-          <TextInput
-            style={styles.input}
-            value={form.city}
-            onChangeText={(text) => setForm({ ...form, city: text })}
-            placeholder="Enter city"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>House</Text>
-          <TextInput
-            style={styles.input}
-            value={form.house}
-            onChangeText={(text) => setForm({ ...form, house: text })}
-            placeholder="Enter house number"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Landmark</Text>
-          <TextInput
-            style={styles.input}
-            value={form.landmark}
-            onChangeText={(text) => setForm({ ...form, landmark: text })}
-            placeholder="Enter landmark"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Street</Text>
-          <TextInput
-            style={styles.input}
-            value={form.street}
-            onChangeText={(text) => setForm({ ...form, street: text })}
-            placeholder="Enter street"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>State</Text>
-          <TextInput
-            style={styles.input}
-            value={form.state}
-            onChangeText={(text) => setForm({ ...form, state: text })}
-            placeholder="Enter state"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>PIN Code</Text>
-          <TextInput
-            style={styles.input}
-            value={form.pinCode}
-            onChangeText={(text) => setForm({ ...form, pinCode: text })}
-            placeholder="Enter PIN Code"
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.fieldContainer}>
-          <Text style={styles.label}>Phone</Text>
-          <TextInput
-            style={styles.input}
-            value={form.number}
-            onChangeText={(text) => setForm({ ...form, number: text })}
-            placeholder="Enter phone number"
-            keyboardType="numeric"
-          />
-        </View>
-
-        <TouchableOpacity style={{ marginTop: 10,marginBottom:20 }} onPress={handleSave}>
+        <TouchableOpacity
+          style={{ marginTop: 10, marginBottom: 20 }}
+          onPress={handleSave}
+        >
           <CButton buttonText="Save Address" />
         </TouchableOpacity>
       </ScrollView>

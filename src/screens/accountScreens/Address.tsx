@@ -13,6 +13,7 @@ import { AuthStore } from "src/services/storage/authStore";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScreensParamList } from "src/navigation/types";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import SkeletonLoading from "src/components/common/SkeletonLoading";
 
 const Address: React.FC = () => {
   const [allAddress, setAllAddress] = React.useState([]);
@@ -88,7 +89,25 @@ const Address: React.FC = () => {
       <BackButton />
       <Text style={styles.contentText}>Your Address</Text>
       <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
+        {loading && <SkeletonLoading />}
+        {!loading && allAddress.length === 0 && <Text>No address found</Text>}
         {renderAddress()}
+
+        {!loading && (
+          <TouchableOpacity onPress={() => navigation.navigate("AddAddress")}>
+            <View style={styles.addaddresscard}>
+              <Icon
+                name="add"
+                size={38}
+                color="#444"
+                style={{ width: 30, fontWeight: "bold" }}
+              />
+              <Text style={{ color: "#333", fontWeight: "bold", fontSize: 16 }}>
+                Add New Address
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
@@ -97,7 +116,7 @@ const Address: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    // backgroundColor: "",
   },
   contentText: {
     marginTop: 5,
@@ -109,17 +128,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   addressCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#f0f0f0",
     borderRadius: 10,
     padding: 20,
     marginBottom: 15,
-    shadowColor: "#grey",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 1,
-    borderWidth: 0.5,
-    borderColor: "#grey",
   },
   name: {
     fontSize: 18,
@@ -135,6 +147,18 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "600",
     color: "#444",
+  },
+  addaddresscard: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 20,
+    borderWidth: 4,
+    borderColor: "#f0f0f0",
   },
 });
 
