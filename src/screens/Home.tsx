@@ -1,8 +1,7 @@
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import Carousel from "src/components/common/productCards/Carousel ";
-import BannerCarousel from "src/components/common/productCards/Carousel ";
+import BannnerCarousel from "src/components/common/productCards/Carousel ";
 import { getBanners } from "src/services/api/productApi";
 
 const Home: React.FC = () => {
@@ -21,7 +20,12 @@ const Home: React.FC = () => {
   return (
     <View style={styles.container}>
       <ScrollView style={{ flex: 1 }}>
-        <Carousel data={banners?.banners || []} />
+        {
+          banners?.banners?.length === 0 && (
+            <Text style={styles.title}>No Banners Found</Text>
+          )
+        }
+        <BannnerCarousel data={banners?.banners || []} />
       </ScrollView>
       {/* Add other components like product lists or banners here */}
     </View>

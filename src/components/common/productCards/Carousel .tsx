@@ -27,7 +27,7 @@ interface CarouselProps {
   autoScrollInterval?: number;
 }
 
-const Carousel: React.FC<CarouselProps> = ({
+const BannnerCarousel: React.FC<CarouselProps> = ({
   data,
   autoScrollInterval = 3000,
 }) => {
@@ -238,4 +238,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Carousel;
+export default BannnerCarousel;
