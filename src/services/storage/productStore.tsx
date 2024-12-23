@@ -8,11 +8,11 @@ interface UserStore {
 }
 
 // Create the Zustand store for managing addresses
-export const useUserStore = create<UserStore>((set) => ({
+export const useProductStore = create<UserStore>((set) => ({
   banners: [],
   setBanners: (banners) => set({ banners }),
   getBanners: () => {
-    const state = useUserStore.getState();
+    const state = useProductStore.getState();
     return state.addresses;
   },
 }));
