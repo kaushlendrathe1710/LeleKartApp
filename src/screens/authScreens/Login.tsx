@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Button } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { ScreensParamList } from "../../navigation/types";
 import Icon from "react-native-vector-icons/Ionicons";
 import CustomInput from "../../components/common/CustomInput";
 import { loginUser } from "src/services/api/authApi";
-import { useToast } from "../../../src/context/ToastContext"; // Adjust the import path
+import { useToast } from "../../../src/context/ToastContext"; 
 import CustomLoading from "src/components/common/CustomLoading";
+import { signInWithGoogle } from "src/components/common/accontScreen/SignInWithGoogle";
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
@@ -54,6 +55,7 @@ const Login: React.FC = () => {
         </TouchableOpacity>
       </View> */}
       {/* Form Container */}
+      {/* <Button title="Sign in with Google" onPress={signInWithGoogle} /> */}
       {loading && <CustomLoading size={250} />}
       {loading && <Text>Logging in, please wait... </Text>}
       {!loading && (
@@ -83,7 +85,9 @@ const Login: React.FC = () => {
             ]}
           >
             <Text style={[styles.noAccountText]}>Forgot your password? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
               <Text style={[styles.signUpText, { color: "#1597FF" }]}>
                 Reset Now
               </Text>

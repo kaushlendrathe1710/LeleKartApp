@@ -45,13 +45,25 @@ const Address: React.FC = () => {
             {/* <Icon name="home" size={30} color="#444" /> */}
             <TouchableOpacity
               onPress={() => handleDeleteAddress(address)}
-              style={{ position: "absolute", right: 10, top: 10, width: 30 ,zIndex:50}}
+              style={{
+                position: "absolute",
+                right: 10,
+                top: 10,
+                width: 30,
+                zIndex: 50,
+              }}
             >
               <Icon name="trash" size={30} color="#444" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate("EditAddress", { address })}
-              style={{ position: "absolute", right: 10, bottom: 10, width: 30,zIndex:50 }}
+              style={{
+                position: "absolute",
+                right: 10,
+                bottom: 10,
+                width: 30,
+                zIndex: 50,
+              }}
             >
               <Icon name="create" size={30} color="#444" />
             </TouchableOpacity>
@@ -104,7 +116,18 @@ const Address: React.FC = () => {
       <Text style={styles.contentText}>Your Address</Text>
       <ScrollView style={{ flex: 1, paddingHorizontal: 20 }}>
         {loading && <SkeletonLoading />}
-        {!loading && addresses?.length === 0 && <Text>No address found</Text>}
+        {!loading && addresses?.length === 0 && (
+          <Text
+            style={{
+              color: "#444",
+              marginBottom: 20,
+              fontSize: 18,
+              fontWeight: "bold",
+            }}
+          >
+            No address found
+          </Text>
+        )}
         {!loading && renderAddress()}
 
         {!loading && (

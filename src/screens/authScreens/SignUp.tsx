@@ -7,6 +7,8 @@ import CustomInput from "../../components/common/CustomInput";
 import { useToast } from "src/context/ToastContext";
 import { registerUser } from "src/services/api/authApi";
 import CustomLoading from "src/components/common/CustomLoading";
+import TitleText from "src/components/common/CTitleText";
+import BackButton from "src/components/common/CBackBotton";
 
 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const phoneRegex = /^[0-9]{10}$/; // Regex for validating 10-digit phone numbers
@@ -79,14 +81,8 @@ const SignUp: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Back button */}
-      <View style={styles.backButtonContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <View style={styles.backButton}>
-            <Icon name="arrow-back" size={28} color="black" />
-          </View>
-        </TouchableOpacity>
-      </View>
-
+   <BackButton/>
+      <TitleText text="SignUp"/>
       {/* Form Container */}
       {loading && (
         <View style={{ display: "flex", flexDirection: "column", gap: 50 }}>
@@ -98,8 +94,6 @@ const SignUp: React.FC = () => {
       )}
       {!loading && (
         <View style={styles.formContainer}>
-          <Text style={styles.title}>SignUp</Text>
-
           <View style={styles.inputWrapper}>
             <CustomInput
               value={name}
@@ -162,22 +156,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    justifyContent: "center", // Centers content vertically
     alignItems: "center", // Centers content horizontally
-  },
-  backButtonContainer: {
-    position: "absolute",
-    top: 40,
-    left: 30,
-  },
-  backButton: {
-    padding: 10,
-    borderColor: "#DCDCDC",
-    borderWidth: 2,
-    borderRadius: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 80,
   },
   formContainer: {
     width: "90%",

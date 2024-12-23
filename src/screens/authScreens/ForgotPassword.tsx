@@ -1,4 +1,8 @@
-import { useTheme } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import React, { useRef, useState } from "react";
 import {
   View,
@@ -10,10 +14,19 @@ import {
 import BackButton from "src/components/common/CBackBotton";
 import CButton from "src/components/common/CButton";
 import CustomInput from "src/components/common/CustomInput";
+import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
+import { ScreensParamList } from "src/navigation/types";
+import {
+  forgotPassword,
+  resetPassword,
+  verifyUserOtp,
+  verifyUserOtpForgot,
+} from "src/services/api/authApi";
 import { AuthStore } from "src/services/storage/authStore";
 
 const ForgotPassword: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const inputRefs = useRef<Array<TextInput | null>>([]);
   const [email, setEmail] = useState<string>("");
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -42,36 +55,30 @@ const ForgotPassword: React.FC = () => {
   };
 
   const sendOtp = () => {
-    // Email validation
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!email || !emailRegex.test(email)) {
       showToast("Please enter a valid email address.", "info", 2000);
       return;
     }
-
-    // Simulate OTP sending
-    setShowOtp(true);
-    setOtpSent(true); // Set OTP sent to true to show the confirmation message
-    showToast("OTP sent to your email!", "success", 2000);
+    forgotPassword(email, setShowOtp, showToast, setLoading);
   };
-
   const confirmOtp = async () => {
     if (otp.join("").length < 4) {
       showToast("Please enter a 4-digit OTP", "info", 2000);
       return;
     }
     try {
+      await verifyUserOtpForgot(email, otp.join(""), setLoading, showToast);
       const otpValue = otp.join("");
       console.log("OTP Confirmed:", otpValue);
-      setShowChangePassword(true);
-      showToast("OTP verified successfully!", "success", 2000);
+      await setShowChangePassword(true);
+      await showToast("OTP verified successfully!", "info", 2000);
     } catch (err: any) {
       console.log("Error in confirmOtp:", err);
       showToast("Invalid OTP. Please try again.", "error", 2000);
     }
   };
-
-  const changePassword = () => {
+  const changePassword = async () => {
     if (newPassword !== confirmPassword) {
       showToast("Passwords do not match", "error", 2000);
       return;
@@ -80,7 +87,8 @@ const ForgotPassword: React.FC = () => {
       showToast("Password must be at least 6 characters long", "error", 2000);
       return;
     }
-    showToast("Password changed successfully!", "success", 2000);
+    await resetPassword(email, newPassword, showToast, setLoading);
+    await navigation.navigate("Login");
     // Handle further password change logic here
   };
 
@@ -91,82 +99,88 @@ const ForgotPassword: React.FC = () => {
       {/* Title */}
       <Text style={styles.contentText}>Forgot Password</Text>
       {/* Form Content */}
-      <View style={styles.formContainer}>
-        {/* Email Section */}
-        {!otpSent && !showOtp && (
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Enter Registered Email</Text>
-            <TextInput
-              style={[styles.input, { borderColor: colors.text }]}
-              placeholder="Enter your email"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
-        )}
-
-        {/* OTP Sent Message */}
-        {otpSent && !showOtp && (
-          <Text style={styles.otpSentMessage}>OTP sent to your email!</Text>
-        )}
-
-        {!showOtp && !otpSent && (
-          <TouchableOpacity style={styles.buttonWrapper} onPress={sendOtp}>
-            <CButton buttonText="Send OTP" />
-          </TouchableOpacity>
-        )}
-
-        {/* OTP Section */}
-        {showOtp && !showChangePassword && (
-          <>
-            <View style={styles.otpContainer}>
-              {otp.map((digit, index) => (
-                <TextInput
-                  key={index}
-                  style={[
-                    styles.otpInput,
-                    { borderColor: colors.text },
-                    { color: colors.text },
-                  ]}
-                  keyboardType="numeric"
-                  maxLength={1}
-                  value={digit}
-                  onChangeText={(text) => handleChange(text, index)}
-                  ref={(ref) => (inputRefs.current[index] = ref)}
-                />
-              ))}
+      {loading && <CustomLoading size={250} />}
+      {!loading && (
+        <View style={styles.formContainer}>
+          {/* Email Section */}
+          {!otpSent && !showOtp && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Enter Registered Email</Text>
+              <TextInput
+                style={[styles.input, { borderColor: colors.text }]}
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
             </View>
-            <TouchableOpacity style={styles.buttonWrapper} onPress={confirmOtp}>
-              <CButton buttonText="Confirm OTP" />
-            </TouchableOpacity>
-          </>
-        )}
+          )}
 
-        {/* Change Password Section */}
-        {showChangePassword && (
-          <>
-            <CustomInput
-              value={newPassword}
-              setText={setNewPassword}
-              placeholder="Enter New Password"
-              secure={true}
-            />
-            <CustomInput
-              value={confirmPassword}
-              setText={setConfirmPassword}
-              placeholder="Enter Confirm Password"
-              secure={true}
-            />
-            <TouchableOpacity
-              style={styles.buttonWrapper}
-              onPress={changePassword}
-            >
-              <CButton buttonText="Change Password" />
+          {/* OTP Sent Message */}
+          {/* {otpSent && !showOtp && (
+          <Text style={styles.otpSentMessage}>OTP sent to your email!</Text>
+        )} */}
+
+          {!showOtp && !otpSent && (
+            <TouchableOpacity style={styles.buttonWrapper} onPress={sendOtp}>
+              <CButton buttonText="Send OTP" />
             </TouchableOpacity>
-          </>
-        )}
-      </View>
+          )}
+
+          {/* OTP Section */}
+          {showOtp && !showChangePassword && (
+            <>
+              <View style={styles.otpContainer}>
+                {otp.map((digit, index) => (
+                  <TextInput
+                    key={index}
+                    style={[
+                      styles.otpInput,
+                      { borderColor: colors.text },
+                      { color: colors.text },
+                    ]}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChangeText={(text) => handleChange(text, index)}
+                    ref={(ref) => (inputRefs.current[index] = ref)}
+                  />
+                ))}
+              </View>
+              <TouchableOpacity
+                style={styles.buttonWrapper}
+                onPress={confirmOtp}
+              >
+                <CButton buttonText="Confirm OTP" />
+              </TouchableOpacity>
+            </>
+          )}
+
+          {/* Change Password Section */}
+          {showChangePassword && (
+            <>
+              <CustomInput
+                value={newPassword}
+                setText={setNewPassword}
+                placeholder="Enter New Password"
+                secure={true}
+              />
+              <CustomInput
+                value={confirmPassword}
+                setText={setConfirmPassword}
+                placeholder="Enter Confirm Password"
+                secure={true}
+              />
+              <TouchableOpacity
+                style={styles.buttonWrapper}
+                onPress={changePassword}
+              >
+                <CButton buttonText="Change Password" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      )}
     </View>
   );
 };

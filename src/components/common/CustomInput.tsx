@@ -29,14 +29,14 @@ const CustomInput: React.FC<CustomInputProps> = ({
         placeholder={placeholder}
         onChangeText={(text) => setText && setText(text)}
         style={styles.input}
-        secureTextEntry={isSecure} // Dynamically control secureTextEntry
+        secureTextEntry={isSecure} 
         keyboardType={secure ? "default" : "email-address"}
       />
       {/* Eye Icon for Password Toggle */}
       {secure && (
         <TouchableOpacity onPress={() => setIsSecure((prev) => !prev)}>
           <Icon
-            name={isSecure ? "eye-off-outline" : "eye-outline"} // Toggle icon
+            name={isSecure ? "eye-off-outline" : "eye-outline"} 
             size={24}
             color="black"
           />
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
-    height: 60,
+    height: 50,
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
     marginHorizontal: 20,

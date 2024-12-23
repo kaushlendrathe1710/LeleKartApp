@@ -1,4 +1,8 @@
-import { useTheme } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import React, { useRef, useState } from "react";
 import {
   View,
@@ -10,11 +14,19 @@ import {
 import BackButton from "src/components/common/CBackBotton";
 import CButton from "src/components/common/CButton";
 import CustomInput from "src/components/common/CustomInput";
+import CustomLoading from "src/components/common/CustomLoading";
 import { useToast } from "src/context/ToastContext";
+import { ScreensParamList } from "src/navigation/types";
+import {
+  forgotPassword,
+  resetPassword,
+  verifyUserOtpForgot,
+} from "src/services/api/authApi";
 import { AuthStore } from "src/services/storage/authStore";
 
 const ResetPassword: React.FC = () => {
-  const { token, userDetails, SavedEmail } = AuthStore();
+  const {userDetails, SavedEmail } = AuthStore();
+  const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const inputRefs = useRef<Array<TextInput | null>>([]);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,7 +34,6 @@ const ResetPassword: React.FC = () => {
   const { showToast } = useToast();
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-
   // Step states
   const [showOtp, setShowOtp] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -40,10 +51,9 @@ const ResetPassword: React.FC = () => {
     }
   };
 
-  const sendOtp = () => {
-    // Simulate OTP sending
-    setShowOtp(true);
-    showToast("OTP sent to your email!", "success", 2000);
+  const sendOtp = async () => {
+    const email = SavedEmail || userDetails.user.email;
+    await forgotPassword(email, setShowOtp, showToast, setLoading);
   };
 
   const confirmOtp = async () => {
@@ -52,17 +62,19 @@ const ResetPassword: React.FC = () => {
       return;
     }
     try {
+      const email = SavedEmail || userDetails.user.email;
+      await verifyUserOtpForgot(email, otp.join(""), setLoading, showToast);
       const otpValue = otp.join("");
       console.log("OTP Confirmed:", otpValue);
-      setShowChangePassword(true);
-      showToast("OTP verified successfully!", "success", 2000);
+      await setShowChangePassword(true);
+      await showToast("OTP verified successfully!", "info", 2000);
     } catch (err: any) {
       console.log("Error in confirmOtp:", err);
       showToast("Invalid OTP. Please try again.", "error", 2000);
     }
   };
 
-  const changePassword = () => {
+  const changePassword = async () => {
     if (newPassword !== confirmPassword) {
       showToast("Passwords do not match", "error", 2000);
       return;
@@ -72,6 +84,9 @@ const ResetPassword: React.FC = () => {
       return;
     }
     showToast("Password changed successfully!", "success", 2000);
+    const email = SavedEmail || userDetails.user.email;
+    await resetPassword(email, newPassword, showToast, setLoading);
+    await navigation.navigate("Main");
     // Handle further password change logic here
   };
 
@@ -88,14 +103,18 @@ const ResetPassword: React.FC = () => {
           <Text style={styles.label}>Registered Email</Text>
           <Text style={styles.emailText}>{SavedEmail || "Not Available"}</Text>
         </View>
-        {!showOtp && (
+
+        {
+          loading && <CustomLoading size={250} />
+        }
+        {!showOtp && !loading && (
           <TouchableOpacity style={styles.buttonWrapper} onPress={sendOtp}>
             <CButton buttonText="Send OTP" />
           </TouchableOpacity>
         )}
 
         {/* OTP Section */}
-        {showOtp && !showChangePassword && (
+        {showOtp && !showChangePassword && !loading && (
           <>
             <View style={styles.otpContainer}>
               {otp.map((digit, index) => (
@@ -121,7 +140,7 @@ const ResetPassword: React.FC = () => {
         )}
 
         {/* Change Password Section */}
-        {showChangePassword && (
+        {showChangePassword && !loading && (
           <>
             <CustomInput
               value={newPassword}

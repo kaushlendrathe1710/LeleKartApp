@@ -76,7 +76,7 @@ export const loginUser = async (
       { timeout: 5000 }
     );
     const { token, user } = await response.data;
-    
+
     // Store token and email using Zustand store
     await AuthStore.getState().setToken(token);
     await AuthStore.getState().setSavedEmail(user.email);
@@ -141,45 +141,93 @@ export const verifyUserOtp = async (
 };
 
 // Forgot Password API
-// export const forgotPassword = async (email: string) => {
-//   try {
-//     const response = await axios.post(`${BASE_URL}/auth/forgot-password`, {
-//       email,
-//     });
-//     return { success: true, message: response.data.message };
-//   } catch (error) {
-//     console.error(
-//       "Forgot Password Error:",
-//       error.response?.data || error.message
-//     );
-//     return {
-//       success: false,
-//       error: error.response?.data?.message || "Forgot password failed",
-//     };
-//   }
-// };
+export const forgotPassword = async (
+  email: string,
+  setShowOtp,
+  showToast,
+  setLoading
+) => {
+  setLoading(true);
+  console.log(email);
+  try {
+    const response = await axios.post(`${BASE_URL}/api/auth/forgotPassword`, {
+      email,
+    });
+    await setLoading(false);
+    await showToast("OTP sent to your email!", "success", 2000);
+    await setShowOtp(true);
+    return { success: true, message: response.data.message };
+  } catch (error: any) {
+    console.error(
+      "Forgot Password Error:",
+      error.response?.data || error.message
+    );
+    showToast(`${error.response?.data || error.message}`, "error", 2000);
+    return {
+      success: false,
+      error: error.response?.data?.message || "Forgot password failed",
+    };
+  } finally {
+    await setLoading(false);
+    await setShowOtp(true);
+  }
+};
+export const verifyUserOtpForgot = async (
+  email: string,
+  otpValue: string,
+  setLoading: any,
+  showToast: any
+) => {
+  setLoading(true);
+  try {
+    const response = await axios.post(`${BASE_URL}/api/auth/verifyuser`, {
+      email,
+      verificationCode: otpValue, // Ensure you're passing otpValue correctly
+    });
+    showToast(`${response.data.message || "OTP Verified"}`, "success", 2000);
+    return { success: true, message: response.data.message };
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.message || error.message || "Something went wrong";
+    showToast(errorMessage, "error", 2000);
+    console.error("Verify OTP Error:", errorMessage);
+    return { success: false, error: errorMessage };
+  } finally {
+    setLoading(false);
+  }
+};
 
 // Reset Password API
-// export const resetPassword = async (
-//   email: string,
-//   verificationCode: string,
-//   newPassword: string
-// ) => {
-//   try {
-//     const response = await axios.post(`${BASE_URL}/auth/reset-password`, {
-//       email,
-//       verificationCode,
-//       newPassword,
-//     });
-//     return { success: true, message: response.data.message };
-//   } catch (error) {
-//     console.error(
-//       "Reset Password Error:",
-//       error.response?.data || error.message
-//     );
-//     return {
-//       success: false,
-//       error: error.response?.data?.message || "Reset password failed",
-//     };
-//   }
-// };
+export const resetPassword = async (
+  email: string,
+  newPassword: string,
+  showToast,
+  setLoading
+) => {
+  setLoading(true);
+  try {
+    const response = await axios.post(`${BASE_URL}/api/auth/resetPassword`, {
+      email,
+      newPassword,
+    });
+    showToast(
+      `${response.data.message || "Password reset successful"}`,
+      "success",
+      2000
+    );
+    setLoading(false);
+    return { success: true, message: response.data.message };
+  } catch (error: any) {
+    showToast(`${error.response?.data || error.message}`, "error", 2000);
+    console.error(
+      "Reset Password Error:",
+      error.response?.data || error.message
+    );
+    return {
+      success: false,
+      error: error.response?.data?.message || "Reset password failed",
+    };
+  } finally {
+    setLoading(false);
+  }
+};

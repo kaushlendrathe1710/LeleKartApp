@@ -112,7 +112,7 @@ const Account: React.FC = () => {
       )}
 
       <ScrollView>
-        {!isAuthenticated && (
+        {isAuthenticated && (
           <>
             <RedirectOption
               text={"Edit Profile"}
