@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import ProductCarousel from "./ProductCarousel";
+import SkeletonLoader from "../SkeletonProps";
+import SkeletonLoading from "../SkeletonLoading";
 
 // Define types for product data
 interface productDataProps {
@@ -52,7 +54,13 @@ const HomeBestOfAll = ({
 }) => {
   // Only proceed if we have products
   if (products.length === 0) {
-    return null;
+    return (
+      <>
+        <SkeletonLoading />
+        <SkeletonLoading />
+        <SkeletonLoading />
+      </>
+    );
   }
 
   const transformedProducts = products.products.map((product) => ({
@@ -73,7 +81,15 @@ const HomeBestOfAll = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Best Of All</Text>
-        <Text style={{ textAlign: "center",fontSize:12,width:"70%",opacity:0.8,color:'black' }}>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: 12,
+            width: "70%",
+            opacity: 0.8,
+            color: "black",
+          }}
+        >
           Our best products where classic and contemporary style converge in
           perfect harmony
         </Text>
@@ -85,8 +101,6 @@ const HomeBestOfAll = ({
     </View>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -103,7 +117,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 16,
     fontWeight: "bold",
-    textAlign:'center'
+    textAlign: "center",
   },
   viewMore: {
     color: "#007BFF",

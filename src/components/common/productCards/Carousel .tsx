@@ -13,6 +13,7 @@ import {
 import { getBanners } from "src/services/api/productApi"; // Replace with your actual API function
 import SkeletonLoader from "../SkeletonProps";
 import { useProductStore } from "src/services/storage/productStore";
+import SkeletonLoading from "../SkeletonLoading";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -172,7 +173,7 @@ const BannnerCarousel = () => {
   );
 
   if (!Array.isArray(banners) || banners?.length === 0) {
-    return <SkeletonLoader width={SCREEN_WIDTH} height={SCREEN_WIDTH * 0.6} />;
+    return <SkeletonLoading/>;
   }
 
   return (
