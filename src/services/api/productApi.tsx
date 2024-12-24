@@ -21,3 +21,14 @@ export const getProductsWithCategoryHome = async () => {
     return [];
   }
 };
+export const getBestSellersHome = async () => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/product/getBestSellers`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Get Banners Error:", error.message);
+    return [];
+  }
+};

@@ -77,7 +77,7 @@ const BannnerCarousel = () => {
         clearInterval(intervalId);
       }
     };
-  }, [activeIndex, isAutoScrolling, banners.length, autoScrollInterval]);
+  }, [activeIndex, isAutoScrolling, banners?.length, autoScrollInterval]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.x;
@@ -171,7 +171,7 @@ const BannnerCarousel = () => {
     }
   );
 
-  if (!Array.isArray(banners) || banners.length === 0) {
+  if (!Array.isArray(banners) || banners?.length === 0) {
     return <SkeletonLoader width={SCREEN_WIDTH} height={SCREEN_WIDTH * 0.6} />;
   }
 

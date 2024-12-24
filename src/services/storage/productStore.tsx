@@ -8,6 +8,9 @@ interface UserStore {
   productsWithCategory: Array<any>; // Array to hold products with categories
   setProductsWithCategory: (productsWithCategory: Array<any>) => void; // Method to set all products
   getProductsWithCategory: () => Array<any>; // Method to get all products with categories
+  BestSellersHome: Array<any>; // Array to hold products with categories
+  setBestSellersHome: (BestSellersHome: Array<any>) => void; // Method to set all products
+  getBestSellersHome: () => Array<any>; // Method to get all products with categories
 }
 
 // Create the Zustand store for managing addresses
@@ -24,5 +27,11 @@ export const useProductStore = create<UserStore>((set) => ({
   getProductsWithCategory: () => {
     const state = useProductStore.getState();
     return state.productsWithCategory;
+  },
+  BestSellersHome: [],
+  setBestSellersHome: (BestSellersHome) => set({ BestSellersHome }),
+  getBestSellersHome: () => {
+    const state = useProductStore.getState();
+    return state.BestSellersHome;
   },
 }));
