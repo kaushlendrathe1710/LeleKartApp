@@ -24,20 +24,14 @@ interface BannerItem {
   productId: number;
 }
 
-interface CarouselProps {
-  data: BannerItem[];
-  autoScrollInterval?: number;
-}
-
-const BannnerCarousel: React.FC<CarouselProps> = ({
-  autoScrollInterval = 3000,
-}) => {
+const BannnerCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   // const [banners, setBanners] = useState<BannerItem[]>([]); // Set the state to an empty array
   const { banners, setBanners } = useProductStore();
+  const autoScrollInterval = 3000;
   // Fetch banners from API
   const fetchBanners = async () => {
     try {

@@ -10,3 +10,14 @@ export const getBanners = async () => {
     return [];
   }
 };
+export const getProductsWithCategoryHome = async () => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/product/getProductsWithCategory`
+    );
+    return response.data;
+  } catch (error: any) {
+    console.error("Get Banners Error:", error.message);
+    return [];
+  }
+};
