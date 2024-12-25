@@ -23,6 +23,8 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import BackButton from "src/components/common/CBackBotton";
 import ProductCarousel from "src/components/common/productCards/ProductCarousel";
+import FastImage from "react-native-fast-image";
+import ShowMoreText from "src/components/common/productCards/ShowMoreText";
 
 interface DetailType {
   key: string;
@@ -36,6 +38,8 @@ interface ProductType {
   description: string;
   images: any;
   categories: any;
+  features: any;
+  tags:any;
 }
 
 const ProductDetails: React.FC = ({ route }: any) => {
@@ -54,34 +58,22 @@ const ProductDetails: React.FC = ({ route }: any) => {
   const [heartScale] = useState(new Animated.Value(0));
   const [heartOpacity] = useState(new Animated.Value(0));
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [isContentOverflowing, setIsContentOverflowing] = useState(false);
-  const contentRef = useRef<any>(null);
-
   const fetchProductDetails = async (id: string) => {
     try {
       setLoading(true);
-
       // Fetch product details
       const data = await getProductDetails(id, setLoading);
-
       // Set product details state
       await setProductDetails(data.product);
-
       // Directly access the data instead of relying on the updated state
       const categoryId = data.product?.categories?.id;
       const productId = data.product?.id;
-
-      console.log(categoryId, productId, "on home");
-
       // Fetch products by category
       const productByCategoryData = await getProductsByCategory(
         categoryId,
         productId,
         setLoading
       );
-
       // Set bottom recommendation state
       await setBottomRecommendation(productByCategoryData.product);
     } catch (error) {
@@ -102,34 +94,11 @@ const ProductDetails: React.FC = ({ route }: any) => {
     } else {
       animateHeart();
     }
-    // Add API call or local storage update logic here to save the wishlist state
-    console.log(
-      `Product ${isWishlisted ? "removed from" : "added to"} wishlist`
-    );
-  };
-
-  const formatDescription = (description: string | undefined) => {
-    if (!description) return { mainText: "", details: [] };
-
-    const lines = description
-      .trim()
-      .split("\n")
-      .filter((line) => line.trim() !== "");
-    const mainText = lines[0];
-    const details = lines.slice(1).reduce((acc: DetailType[], line) => {
-      const [key, value] = line.split(" - ");
-      if (key && value) {
-        acc.push({ key: key.trim(), value: value.trim() });
-      }
-      return acc;
-    }, []);
-    return { mainText, details };
   };
 
   const handleAddToCart = async () => {
     try {
       setAddingToCart(true);
-      // Add your cart logic here
       setQuantity(1);
     } finally {
       setAddingToCart(false);
@@ -153,7 +122,6 @@ const ProductDetails: React.FC = ({ route }: any) => {
     setQuantity((prev) => (increment ? prev + 1 : Math.max(0, prev - 1)));
   };
 
-  const { mainText, details } = formatDescription(productDetails?.description);
   const animateHeart = () => {
     Animated.sequence([
       Animated.parallel([
@@ -184,15 +152,21 @@ const ProductDetails: React.FC = ({ route }: any) => {
   };
 
   if (loading) {
-    return <SkeletonLoading />;
+    return (
+      <View>
+        <SkeletonLoading />
+        <SkeletonLoading />
+        <SkeletonLoading />
+        <SkeletonLoading />
+      </View>
+    );
   }
-
+console.log(productDetails?.tags)
   return (
     <View style={[styles.container]}>
       <BackButton />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <ImageCarousel images={productDetails?.images} />
-
         <View style={styles.contentContainer}>
           <View
             style={{
@@ -277,42 +251,76 @@ const ProductDetails: React.FC = ({ route }: any) => {
             </Animated.View>
           </View>
 
-          <View style={styles.descriptionContainer}>
-            <Text style={{ fontWeight: 500 }}>Description:</Text>
-            {mainText && (
-              <Text style={[styles.mainText, { color: colors.text }]}>
-                {mainText}
-              </Text>
-            )}
-
-            <View style={styles.detailsGrid}>
-              {details.map((detail, index) => (
-                <View key={index} style={styles.detailItem}>
-                  <Text style={[styles.detailKey, { color: colors.text }]}>
-                    {detail.key}
-                  </Text>
-                  <Text style={[styles.detailValue, { color: colors.text }]}>
-                    {detail.value}
-                  </Text>
-                </View>
-              ))}
+          {productDetails && productDetails?.description && (
+            <View style={styles.descriptionContainer}>
+              <Text style={{ fontWeight: 500 }}>Description:</Text>
+              <ShowMoreText
+                text={productDetails?.description || " "}
+                wordLimit={15}
+                fontSize={14}
+                lineHeight={23}
+              />
             </View>
-          </View>
+          )}
+
+          {productDetails && productDetails?.tags && (
+            <View style={styles.descriptionContainer}>
+              <Text style={{ fontWeight: "500" }}>Tags:</Text>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 10,
+                  flexWrap: "wrap",
+                  marginTop:5
+                }}
+              >
+                {productDetails?.tags
+                  .filter((tag) => tag.trim() !== "") // Filter out blank tags
+                  .map((tag, index) => (
+                    <Text
+                      style={{
+                        width: "20%",
+                        backgroundColor: "#020003",
+                        borderRadius: 25,
+                        color: "white",
+                        textAlign: "center",
+                        padding: 5,
+                      }}
+                      key={index}
+                    >
+                      {tag}
+                    </Text>
+                  ))}
+              </View>
+            </View>
+          )}
+
+          {productDetails && productDetails?.features && (
+            <View style={[styles.descriptionContainer]}>
+              <Text style={{ fontWeight: 500 }}>Features:</Text>
+              <ShowMoreText
+                text={
+                  productDetails?.features
+                    ? productDetails.features.join(" ")
+                    : " "
+                }
+                wordLimit={20}
+                fontSize={14}
+                lineHeight={23}
+              />
+            </View>
+          )}
         </View>
 
         {/* best of related to category of product  */}
         <View>
-          <View style={{ marginHorizontal:20,marginBottom:10}}>
+          <View style={{ marginHorizontal: 20, marginBottom: 10 }}>
             <Text
               style={{ fontSize: 16, fontWeight: "bold", color: "#282C35" }}
             >
               Best Of {productDetails?.categories?.name}
             </Text>
-            {/* <TouchableOpacity
-              onPress={() => console.log(`Go to category ${categoryId}`)}
-            >
-              <Text style={styles.viewMore}>View More</Text>
-            </TouchableOpacity> */}
           </View>
           {bottomRecommendation && (
             <ProductCarousel
@@ -322,7 +330,6 @@ const ProductDetails: React.FC = ({ route }: any) => {
           )}
         </View>
       </ScrollView>
-
       {/* Animated Heart Overlay */}
       <Animated.View
         style={[
@@ -344,7 +351,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100,
+    paddingBottom: 20,
   },
   contentContainer: {
     padding: 16,

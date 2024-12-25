@@ -253,6 +253,7 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
+import FastImage from "react-native-fast-image";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScreensParamList } from "src/navigation/types";
 
@@ -266,7 +267,7 @@ interface Product {
   price: string;
   description: string;
   image: string;
-  images:any;
+  images: any;
 }
 
 interface ProductCarouselProps {
@@ -312,11 +313,24 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         />
       )}
       {(forWhat === "homebestofall" || forWhat === "homebestof") && (
-        <Image
-          source={{ uri: product.images[0] ?   product.images[0] :  product.image  }}
-          style={styles.productImage}
+        <FastImage
+          style={{
+            width: "100%", // Full width of the container
+            height: 200, // Set a specific height or use a percentage if appropriate
+            borderRadius:12
+          }}
+          source={{
+            uri: product.images[0] ? product.images[0] : product.image,
+          }}
           resizeMode="cover"
+          // resizeMode={FastImage.resizeMode.cover}
         />
+
+        // <Image
+        //   source={{ uri: product.images[0] ?   product.images[0] :  product.image  }}
+        //   style={styles.productImage}
+        //   resizeMode="cover"
+        // />
       )}
 
       <View style={styles.productInfo}>

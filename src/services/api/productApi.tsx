@@ -36,7 +36,6 @@ export const getProductDetails = async (id, setLoading) => {
     const response = await axios.get(`${BASE_URL}/api/product/getProduct`, {
       params: { productId: id },
     });
-
     return response.data;
   } catch (error: any) {
     console.error("Get Banners Error:", error.message);
@@ -50,7 +49,6 @@ export const getProductsByCategory = async (
   productId,
   setLoading
 ) => {
-  console.log(categoryId,productId)
   setLoading(true);
   try {
     const response = await axios.get(
@@ -59,7 +57,6 @@ export const getProductsByCategory = async (
         params: { id: categoryId, productId: productId },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error: any) {
     console.error("Get Banners Error:", error.message);
