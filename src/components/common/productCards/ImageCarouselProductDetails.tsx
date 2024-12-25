@@ -12,6 +12,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import FastImage from "react-native-fast-image";
 
 const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get("window");
 const STATUS_BAR_HEIGHT =
@@ -46,13 +47,13 @@ const ImageCarousel = ({ images = [] }) => {
       }}
       activeOpacity={0.9}
     >
-      <Image source={{ uri: item }} style={styles.image} resizeMode="cover" />
+      <FastImage source={{ uri: item }} style={styles.image} resizeMode="cover" />
     </TouchableOpacity>
   );
 
   const renderFullScreenItem = ({ item }) => (
     <View style={styles.fullScreenImageContainer}>
-      <Image
+      <FastImage
         source={{ uri: item }}
         style={styles.fullScreenImage}
         resizeMode="contain"
@@ -102,14 +103,12 @@ const ImageCarousel = ({ images = [] }) => {
   if (images.length === 1) {
     return (
       <View style={styles.container}>
-        <View
-          style={{ borderRadius: 30, overflow: "hidden", }}
-        >
+        <View style={{ borderRadius: 50, overflow: "hidden" }}>
           <TouchableOpacity
             onPress={() => setModalVisible(true)}
             activeOpacity={0.9}
           >
-            <Image
+            <FastImage
               source={{ uri: images[0] }}
               style={styles.image}
               resizeMode="cover"
@@ -132,7 +131,7 @@ const ImageCarousel = ({ images = [] }) => {
               <MaterialIcons name="close" size={24} color="white" />
             </TouchableOpacity>
             <View style={styles.fullScreenImageWrapper}>
-              <Image
+              <FastImage
                 source={{ uri: images[0] }}
                 style={styles.fullScreenImage}
                 resizeMode="contain"
@@ -147,7 +146,7 @@ const ImageCarousel = ({ images = [] }) => {
   return (
     <View style={styles.container}>
       <View
-        style={{ borderRadius: 30, overflow: "hidden",}}
+        style={{ borderRadius: 50, overflow: "hidden",}}
       >
         <FlatList
           ref={flatListRef}
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: WINDOW_WIDTH,
-    height: 300,
+    height: WINDOW_WIDTH*1.3,
   },
   modalContainer: {
     marginTop: -60,

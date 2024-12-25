@@ -25,6 +25,7 @@ import BackButton from "src/components/common/CBackBotton";
 import ProductCarousel from "src/components/common/productCards/ProductCarousel";
 import FastImage from "react-native-fast-image";
 import ShowMoreText from "src/components/common/productCards/ShowMoreText";
+import SizeSelector from "src/components/common/productCards/SizeSelector";
 
 interface DetailType {
   key: string;
@@ -39,7 +40,9 @@ interface ProductType {
   images: any;
   categories: any;
   features: any;
-  tags:any;
+  tags: any;
+  brand: any;
+  size:any;
 }
 
 const ProductDetails: React.FC = ({ route }: any) => {
@@ -57,6 +60,7 @@ const ProductDetails: React.FC = ({ route }: any) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [heartScale] = useState(new Animated.Value(0));
   const [heartOpacity] = useState(new Animated.Value(0));
+  const [selectedSize, setSelectedSize] = useState<string>("S");
 
   const fetchProductDetails = async (id: string) => {
     try {
@@ -161,7 +165,12 @@ const ProductDetails: React.FC = ({ route }: any) => {
       </View>
     );
   }
-console.log(productDetails?.tags)
+  // console.log(productDetails.size);
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size);
+  };
+
+  const sizes = productDetails && productDetails.size?.split(",");
   return (
     <View style={[styles.container]}>
       <BackButton />
@@ -174,7 +183,7 @@ console.log(productDetails?.tags)
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              marginBottom: 20,
+              marginBottom: 10,
               marginHorizontal: 10,
             }}
           >
@@ -190,7 +199,32 @@ console.log(productDetails?.tags)
               ₹{productDetails?.price?.toLocaleString("en-IN")}
             </Text>
           </View>
-
+          {productDetails &&
+            productDetails.size &&
+            !/^\d{1,2}-\d{1,2}yr$/.test(productDetails.size) &&
+            productDetails.size !== "NA" &&
+            productDetails.size !== "unknown" && (
+              <SizeSelector
+                sizes={sizes}
+                onSizeSelect={handleSizeSelect}
+                selectedSize={selectedSize}
+              />
+            )}
+          {productDetails &&
+            productDetails.size &&
+            /^\d{1,2}-\d{1,2}yr$/.test(productDetails.size) && (
+              <Text
+                style={{
+                  textAlign: "right",
+                  marginBottom: 10,
+                  marginRight: 10,
+                  fontSize: 14,
+                  color: "#020003",
+                }}
+              >
+                for : {productDetails.size}
+              </Text>
+            )}
           <View style={styles.actionContainer}>
             <Pressable
               onPress={toggleWishlist}
@@ -250,10 +284,9 @@ console.log(productDetails?.tags)
               )}
             </Animated.View>
           </View>
-
           {productDetails && productDetails?.description && (
             <View style={styles.descriptionContainer}>
-              <Text style={{ fontWeight: 500 }}>Description:</Text>
+              <Text style={{ fontWeight: 600, fontSize: 16 }}>Description</Text>
               <ShowMoreText
                 text={productDetails?.description || " "}
                 wordLimit={15}
@@ -262,17 +295,16 @@ console.log(productDetails?.tags)
               />
             </View>
           )}
-
           {productDetails && productDetails?.tags && (
             <View style={styles.descriptionContainer}>
-              <Text style={{ fontWeight: "500" }}>Tags:</Text>
+              <Text style={{ fontWeight: 600, fontSize: 16 }}>Tags</Text>
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
                   gap: 10,
                   flexWrap: "wrap",
-                  marginTop:5
+                  marginTop: 5,
                 }}
               >
                 {productDetails?.tags
@@ -280,7 +312,7 @@ console.log(productDetails?.tags)
                   .map((tag, index) => (
                     <Text
                       style={{
-                        width: "20%",
+                        width: "30%",
                         backgroundColor: "#020003",
                         borderRadius: 25,
                         color: "white",
@@ -295,10 +327,33 @@ console.log(productDetails?.tags)
               </View>
             </View>
           )}
-
+          <View>
+            {productDetails && productDetails?.brand && (
+              <View style={styles.descriptionContainer}>
+                <Text style={{ fontWeight: 600, fontSize: 16 }}>Brand</Text>
+                <ShowMoreText
+                  text={productDetails?.brand || " "}
+                  wordLimit={15}
+                  fontSize={14}
+                  lineHeight={23}
+                />
+              </View>
+            )}
+            {/* {productDetails && productDetails?.brand && (
+            <View style={styles.descriptionContainer}>
+              <Text style={{ fontWeight: 600, fontSize: 16 }}>Brand</Text>
+              <ShowMoreText
+                text={productDetails?.brand || " "}
+                wordLimit={15}
+                fontSize={14}
+                lineHeight={23}
+              />
+            </View>
+          )} */}
+          </View>
           {productDetails && productDetails?.features && (
             <View style={[styles.descriptionContainer]}>
-              <Text style={{ fontWeight: 500 }}>Features:</Text>
+              <Text style={{ fontWeight: 600, fontSize: 16 }}>Features:</Text>
               <ShowMoreText
                 text={
                   productDetails?.features
@@ -317,7 +372,7 @@ console.log(productDetails?.tags)
         <View>
           <View style={{ marginHorizontal: 20, marginBottom: 10 }}>
             <Text
-              style={{ fontSize: 16, fontWeight: "bold", color: "#282C35" }}
+              style={{ fontSize: 20, fontWeight: "bold", color: "#282C35" }}
             >
               Best Of {productDetails?.categories?.name}
             </Text>
@@ -351,7 +406,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 60,
   },
   contentContainer: {
     padding: 16,
@@ -382,6 +437,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 1000,
   },
   buttonText: {
     color: "#fff",

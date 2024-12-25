@@ -16,8 +16,13 @@ const ShowMoreText: React.FC<ShowMoreTextProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const words = text.split(" ");
-  const displayedText = isExpanded ? text : words.slice(0, wordLimit).join(" ");
+  // Clean up text: trim extra spaces and replace multiple spaces with a single space
+  const formattedText = text.replace(/\s+/g, " ").trim();
+
+  const words = formattedText.split(" ");
+  const displayedText = isExpanded
+    ? formattedText
+    : words.slice(0, wordLimit).join(" ");
 
   return (
     <View style={styles.container}>
@@ -39,7 +44,7 @@ const ShowMoreText: React.FC<ShowMoreTextProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical:2,
+    marginVertical: 2,
   },
   text: {
     color: "#020003",
