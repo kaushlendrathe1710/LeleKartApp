@@ -53,7 +53,7 @@ const HomeBestOfAll = ({
   products?: productDataProps[] | any; // temporarily widen type for debugging
 }) => {
   // Only proceed if we have products
-  if (products.length === 0) {
+  if (products?.length === 0) {
     return (
       <>
         <SkeletonLoading />
@@ -85,9 +85,9 @@ const HomeBestOfAll = ({
           style={{
             textAlign: "center",
             fontSize: 12,
-            width: "70%",
+            width: "85%",
             opacity: 0.8,
-            color: "black",
+            color: "#282C35",
           }}
         >
           Our best products where classic and contemporary style converge in
@@ -95,7 +95,7 @@ const HomeBestOfAll = ({
         </Text>
       </View>
 
-      {transformedProducts.length > 0 && (
+      {transformedProducts?.length > 0 && (
         <ProductCarousel products={transformedProducts} />
       )}
     </View>
@@ -112,12 +112,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
     marginTop: 15,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
   },
   headerText: {
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+    color: "#282C35",
   },
   viewMore: {
     color: "#007BFF",

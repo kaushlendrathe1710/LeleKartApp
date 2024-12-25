@@ -16,6 +16,7 @@ import AddAddress from "src/screens/accountScreens/AddAddress";
 import ResetPassword from "src/screens/accountScreens/ResetPasswod";
 import EditAddress from "src/screens/accountScreens/EditAddress";
 import ForgotPassword from "src/screens/authScreens/ForgotPassword";
+import ProductDetails from "src/screens/productScreens/ProductDetails";
 
 // Create the stack with the defined parameters
 const Stack = createNativeStackNavigator<ScreensParamList>();
@@ -101,6 +102,11 @@ const AppNavigator: React.FC = () => {
         options={{ headerShown: false }}
         name="ForgotPassword"
         component={ForgotPassword}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="ProductDetails"
+        component={ProductDetails}
       />
     </Stack.Navigator>
   );

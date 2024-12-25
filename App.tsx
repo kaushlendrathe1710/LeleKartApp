@@ -10,6 +10,7 @@ import { lightTheme, darkTheme } from "./src/utils/theme/theme";
 import AppNavigator from "./src/navigation/AppNavigatior";
 import { ToastProvider } from "./src/context/ToastContext";
 import { AuthStore } from "./src/services/storage/authStore";
+import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 
 export default function App() {
@@ -29,36 +30,56 @@ export default function App() {
     }
   }, []);
 
-  // // Handle deep links
-  // const handleDeepLink = (event) => {
-  //   const data = Linking.parse(event.url);
-  //   if (data.queryParams?.token) {
-  //     const token = data.queryParams.token;
-  //     console.log("Received token:", token);
-  //     // AuthStore.getState().setToken(token); // Example of setting token in store
-  //   }
-  // };
+ useEffect(() => {
+   // Set up deep link listener
+   const subscription = Linking.addEventListener("url", handleRedirect);
 
-  // useEffect(() => {
-  //   const subscription = Linking.addEventListener("url", handleDeepLink);
+   // Check for initial URL
+   Linking.getInitialURL().then((url) => {
+     if (url) {
+       handleRedirect({ url });
+     }
+   });
 
-  //   // Handle the initial deep link when the app starts
-  //   Linking.getInitialURL().then((url) => {
-  //     if (url) {
-  //       handleDeepLink({ url });
-  //     }
-  //   });
+   return () => {
+     subscription.remove();
+   };
+ }, []);
 
-  //   return () => subscription.remove();
-  // }, []);
+ const handleRedirect = async (event) => {
+   try {
+     const { url } = event;
+     if (url.includes("callback")) {
+       // Close the browser
+       await WebBrowser.dismissBrowser();
+
+       // Extract token from URL
+       const token = url.split("token=")[1];
+       if (token) {
+         // Store token
+        //  await AsyncStorage.setItem("userToken", token);
+        //  setToken(token);
+         // You can now navigate to your main app screen
+         console.log("Successfully logged in!",token);
+       }
+     }
+   } catch (error) {
+     console.error("Error handling redirect:", error);
+   }
+ };
 
   return (
     <SafeAreaView style={styles.container}>
       <ToastProvider>
         <NavigationContainer theme={theme}>
-          <StatusBar
+          {/* <StatusBar
             barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
             backgroundColor="transparent"
+          /> */}
+          <StatusBar
+            barStyle="dark-content" // Content color is always dark
+            backgroundColor="#FFFFFF" // Background color is always white
+            translucent={false} // Ensure background color is solid and not transparent
           />
           <AppNavigator />
         </NavigationContainer>
@@ -70,6 +91,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "grey",
+    backgroundColor: "white",
   },
 });

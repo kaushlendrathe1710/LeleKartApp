@@ -49,8 +49,8 @@ const BannnerCarousel = () => {
   }, []);
 
   const getAdjustedIndex = (index: number) => {
-    if (banners.length === 0) return 0;
-    return index % banners.length;
+    if (banners?.length === 0) return 0;
+    return index % banners?.length;
   };
 
   useEffect(() => {
@@ -190,8 +190,8 @@ const BannnerCarousel = () => {
         keyExtractor={(item) => item.id.toString()}
         onScrollBeginDrag={onScrollBeginDrag}
         onScrollEndDrag={onScrollEndDrag}
-        initialNumToRender={banners.length}
-        maxToRenderPerBatch={banners.length}
+        initialNumToRender={banners?.length}
+        maxToRenderPerBatch={banners?.length}
         windowSize={3}
         getItemLayout={(_, index) => ({
           length: SCREEN_WIDTH,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: SCREEN_WIDTH,
-    height: SCREEN_WIDTH * 0.6,
+    height: SCREEN_WIDTH * 0.7,
     position: "relative",
   },
   image: {

@@ -60,12 +60,12 @@ const HomeBestOf = ({
     id: product.id.toString(),
     name: product.name,
     price:
-      product.variants.length > 0
+      product?.variants?.length > 0
         ? product.variants[0].price.toString()
         : product.price.toString(),
     description: product.description,
     image:
-      product.variants.length > 0
+      product?.variants?.length > 0
         ? product.variants[0].variantImages[0]?.imageUrl
         : product.images?.[0] ?? "",
   }));
@@ -95,17 +95,20 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 10,
-    marginTop:15,
-    paddingHorizontal: 5,
-
+    marginTop: 15,
+    paddingHorizontal: 10,
   },
   headerText: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#282C35",
   },
   viewMore: {
-    color: "#007BFF",
-    fontSize: 16,
+    color: "#fff",
+    fontSize: 12,
+    backgroundColor: "#282C35",
+    padding: 5,
+    borderRadius: 5,
   },
 });
 

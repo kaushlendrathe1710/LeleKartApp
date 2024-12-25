@@ -23,24 +23,22 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // setIsLoading(true);
+       
         const productsData = await getProductsWithCategoryHome();
         const bestSellerData = await getBestSellersHome();
         setProductsWithCategory(productsData.data);
-        setBestSellersHome(bestSellerData || []); // Ensure we're setting an array
+        setBestSellersHome(bestSellerData || []); 
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        // setIsLoading(false);
+    
       }
     };
 
     fetchData();
   }, []);
 
-  // if (isLoading) {
-  //   return null;
-  // }
+ 
 
   return (
     <View style={styles.container}>

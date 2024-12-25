@@ -6,7 +6,7 @@ WebBrowser.maybeCompleteAuthSession(); // Completes the WebBrowser session if it
 export const signInWithGoogle = async () => {
   const redirectUri = Linking.createURL("auth"); // Generates your app's redirect URI
   const result = await WebBrowser.openAuthSessionAsync(
-    "http://192.168.1.2:3000/api/auth/google", // Backend OAuth endpoint
+    "http://192.168.31.240:3000/api/auth/google", // Backend OAuth endpoint
     redirectUri
   );
 
