@@ -266,13 +266,18 @@ interface Product {
   price: string;
   description: string;
   image: string;
+  images:any;
 }
 
 interface ProductCarouselProps {
   products: Product[];
+  forWhat: string;
 }
 
-const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
+const ProductCarousel: React.FC<ProductCarouselProps> = ({
+  products,
+  forWhat,
+}) => {
   const navigation = useNavigation<NavigationProp<ScreensParamList>>();
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -299,12 +304,21 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ products }) => {
       >
         <Icon name="heart-outline" size={25} color="black" />
       </TouchableOpacity>
+      {forWhat === "bottomrecommendation" && (
+        <Image
+          source={{ uri: product?.images[0] }}
+          style={styles.productImage}
+          resizeMode="cover"
+        />
+      )}
+      {(forWhat === "homebestofall" || forWhat === "homebestof") && (
+        <Image
+          source={{ uri: product.images[0] ?   product.images[0] :  product.image  }}
+          style={styles.productImage}
+          resizeMode="cover"
+        />
+      )}
 
-      <Image
-        source={{ uri: product.image }}
-        style={styles.productImage}
-        resizeMode="cover"
-      />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={1}>
           {product.name}

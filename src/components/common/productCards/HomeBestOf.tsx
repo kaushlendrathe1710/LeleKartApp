@@ -68,6 +68,7 @@ const HomeBestOf = ({
       product?.variants?.length > 0
         ? product.variants[0].variantImages[0]?.imageUrl
         : product.images?.[0] ?? "",
+    images: product?.images,
   }));
 
   return (
@@ -81,7 +82,10 @@ const HomeBestOf = ({
         </TouchableOpacity>
       </View>
 
-      <ProductCarousel products={transformedProducts} />
+      <ProductCarousel
+        products={transformedProducts || []}
+        forWhat="homebestof"
+      />
     </View>
   );
 };

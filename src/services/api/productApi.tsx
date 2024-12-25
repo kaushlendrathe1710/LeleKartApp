@@ -45,3 +45,26 @@ export const getProductDetails = async (id, setLoading) => {
     setLoading(false);
   }
 };
+export const getProductsByCategory = async (
+  categoryId,
+  productId,
+  setLoading
+) => {
+  console.log(categoryId,productId)
+  setLoading(true);
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/api/product/getProductsByCategory`,
+      {
+        params: { id: categoryId, productId: productId },
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error("Get Banners Error:", error.message);
+    return [];
+  } finally {
+    setLoading(false);
+  }
+};
