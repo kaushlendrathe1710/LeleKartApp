@@ -103,7 +103,7 @@ const ImageCarousel = ({ images = [] }) => {
     return (
       <View style={styles.container}>
         <View
-          style={{ borderRadius: 30, overflow: "hidden", marginHorizontal: 10 }}
+          style={{ borderRadius: 30, overflow: "hidden", }}
         >
           <TouchableOpacity
             onPress={() => setModalVisible(true)}
@@ -147,7 +147,7 @@ const ImageCarousel = ({ images = [] }) => {
   return (
     <View style={styles.container}>
       <View
-        style={{ borderRadius: 30, overflow: "hidden", marginHorizontal: 10 }}
+        style={{ borderRadius: 30, overflow: "hidden",}}
       >
         <FlatList
           ref={flatListRef}
@@ -218,10 +218,10 @@ const ImageCarousel = ({ images = [] }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   image: {
-    width: WINDOW_WIDTH - 20,
+    width: WINDOW_WIDTH,
     height: 300,
   },
   modalContainer: {
